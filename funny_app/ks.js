@@ -13,13 +13,13 @@ function C_Line(){
 
 
 function read(strFile,index_score,index_right,index_error){
-    sys.Debug(strFile,index_score,index_right,index_error);
+    s_sys.Debug(strFile,index_score,index_right,index_error);
     
     var pTreap=new com.funnyai.data.Treap();
     
-    var pFile = file.Read_Begin(strFile); 
+    var pFile = s_file.Read_Begin(strFile); 
     
-    var strLine = file.read_line(pFile);
+    var strLine = s_file.read_line(pFile);
     while (strLine != null) {
         var strSplit=strLine.split(",");
         var pLine =new C_Line();
@@ -27,7 +27,7 @@ function read(strFile,index_score,index_right,index_error){
         pLine.Right=parseFloat(strSplit[index_right]);
         pLine.Error=parseFloat(strSplit[index_error]);
         pTreap.insert(new com.funnyai.data.C_K_Double(pLine.Score),pLine);
-        strLine = file.read_line(pFile);
+        strLine = s_file.read_line(pFile);
     }
     pFile.Close();
 
@@ -43,7 +43,7 @@ function read(strFile,index_score,index_right,index_error){
 }
 
 
-var pArray=read(sys.args(1),sys.args(2),sys.args(3),sys.args(4));
+var pArray=read(s_sys.args(1),s_sys.args(2),s_sys.args(3),s_sys.args(4));
 
 //*
 var Sum_Right=0;
@@ -67,7 +67,7 @@ for (var i=0;i<pArray.length;i++){
         delta=tmp_delta;
     }
 }
-out.println(delta);
+s_out.println(delta);
 
 
 

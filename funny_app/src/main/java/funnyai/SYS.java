@@ -5,6 +5,11 @@
  */
 package funnyai;
 
+import com.funnyai.common.AI_Var2;
+import com.funnyai.common.Tools_Init;
+import com.funnyai.fs.AI_Var3;
+import com.funnyai.fs.C_Run_Session;
+
 /**
  *
  * @author happyli
@@ -24,5 +29,17 @@ public class SYS {
         for (String a1 : a) {
             System.out.println(a1);
         }
+    }
+    
+    public void init_setting(String strFile){
+        Tools_Init.Init(strFile);
+    }
+    
+    public void init_session(){
+        AI_Var3.pSessionS=C_Run_Session.Get_New_Session(0,0);
+    }
+    
+    public String Path_Segmentation(){
+        return AI_Var2.Path_Segmentation;
     }
 }
