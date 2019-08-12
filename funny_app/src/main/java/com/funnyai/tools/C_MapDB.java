@@ -3,18 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package funnyai;
+package com.funnyai.tools;
 
-import org.json.JSONArray;
+import org.mapdb.DB;
+import org.mapdb.DBMaker;
 
 /**
  *
  * @author happyli
  */
-public class C_JSON {
-    
-    public JSONArray JSONArray(String strReturn){
-        JSONArray token = new JSONArray(strReturn);
-        return token;
+public class C_MapDB {
+    public DB init(String strFile2){
+        return DBMaker.fileDB(strFile2).checksumHeaderBypass().make();
     }
 }
