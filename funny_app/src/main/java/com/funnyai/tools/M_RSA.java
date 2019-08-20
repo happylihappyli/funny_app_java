@@ -47,7 +47,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 //import sun.misc.BASE64Decoder;
 
 
-public class C_RSA {
+public class M_RSA {
 
     private static final String DEFAULT_PUBLIC_KEY
             = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQChDzcjw/rWgFwnxunbKp7/4e8w" + "\r"
@@ -373,7 +373,7 @@ public class C_RSA {
     }
 
     public String decrypt_by_private(String privateKeyFile,String encodedString){
-        C_RSA rsaEncrypt = new C_RSA();
+        M_RSA rsaEncrypt = new M_RSA();
         try {
             //加载私钥
             rsaEncrypt.loadPrivateKey(new FileInputStream(new File(privateKeyFile)));
@@ -396,7 +396,7 @@ public class C_RSA {
         return "";
     }
     public static void main(String[] args) {
-        C_RSA rsaEncrypt = new C_RSA();
+        M_RSA rsaEncrypt = new M_RSA();
         //rsaEncrypt.genKeyPair();
 
         //加载公钥
@@ -413,7 +413,7 @@ public class C_RSA {
         //加载私钥
         try {
             String privateKeyFile="D:\\Net\\Web\\id_rsa.pkcs8";
-            //rsaEncrypt.loadPrivateKey(C_RSA.DEFAULT_PRIVATE_KEY);
+            //rsaEncrypt.loadPrivateKey(M_RSA.DEFAULT_PRIVATE_KEY);
             rsaEncrypt.loadPrivateKey(new FileInputStream(new File(privateKeyFile)));
             
             
@@ -457,9 +457,9 @@ public class C_RSA {
             //解密
             byte[] plainText = rsaEncrypt.decrypt(rsaEncrypt.getPrivateKey(), cipher);
             System.out.println("密文长度:" + cipher.length);
-            System.out.println(C_RSA.byteArrayToString(cipher));
+            System.out.println(M_RSA.byteArrayToString(cipher));
             System.out.println("明文长度:" + plainText.length);
-            System.out.println(C_RSA.byteArrayToString(plainText));
+            System.out.println(M_RSA.byteArrayToString(plainText));
             System.out.println(new String(plainText));
         } catch (Exception e) {
             System.err.println(e.getMessage());

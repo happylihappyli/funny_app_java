@@ -12,7 +12,7 @@ import org.json.JSONObject;
  *
  * @author happyli
  */
-public class C_JSON {
+public class M_JSON {
     
     public JSONArray JSONArray(String strReturn){
         JSONArray token = new JSONArray(strReturn);

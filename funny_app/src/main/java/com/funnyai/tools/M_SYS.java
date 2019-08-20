@@ -6,6 +6,7 @@
 package com.funnyai.tools;
 
 import com.funnyai.common.AI_Var2;
+import com.funnyai.common.S_Command;
 import com.funnyai.common.Tools_Init;
 import com.funnyai.fs.AI_Var3;
 import com.funnyai.fs.C_Run_Session;
@@ -23,12 +24,12 @@ import org.mozilla.javascript.Scriptable;
  *
  * @author happyli
  */
-public class C_SYS {
+public class M_SYS {
     private String[] args = null;
     private Scriptable scope = null;
     private Context ct = null;
     
-    public C_SYS(String[] args,Scriptable scope,Context ct) {
+    public M_SYS(String[] args,Scriptable scope,Context ct) {
         this.args=args.clone();
         this.scope=scope;
         this.ct=ct;
@@ -42,6 +43,14 @@ public class C_SYS {
         for (String a1 : a) {
             System.out.println(a1);
         }
+    }
+    
+    public String linux(String command,int wait_second){
+        return S_Command.RunShell_Return(command, wait_second);
+    }
+    
+    public void exit(int status){
+        System.exit(status);
     }
     
     public void init_setting(String strFile){
@@ -65,7 +74,7 @@ public class C_SYS {
         try {
             Thread.sleep(1000*second);
         } catch (InterruptedException ex) {
-            Logger.getLogger(C_SYS.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_SYS.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -77,7 +86,7 @@ public class C_SYS {
             strReturn = br.readLine();
             return strReturn;
         } catch (IOException ex) {
-            Logger.getLogger(C_SYS.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_SYS.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
     }

@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 /**
  * This class provide interface to execute command on remote Linux.
  */
-public class C_SSH {
+public class M_SSH {
 
     public String ipAddress;
 
@@ -48,7 +48,7 @@ public class C_SSH {
     public int Wait_Count=3;
     int iCount=0;
     
-    public C_SSH(final String ipAddress, final String username, 
+    public M_SSH(final String ipAddress, final String username, 
             final String password,String file_pem,
             int Wait_Count) {
         this.ipAddress = ipAddress;
@@ -203,7 +203,7 @@ public class C_SSH {
         out.println("IP="+IP);
         out.println("user="+user);
         out.println("file_pem="+file_pem);
-        C_SSH sshExecutor = new C_SSH(IP,user,password,file_pem,wait_count);
+        M_SSH sshExecutor = new M_SSH(IP,user,password,file_pem,wait_count);
         String strLine = S_File_Text.Read(strFile_Command,"utf-8",10000);//
         
         sshExecutor.execute(strLine);
@@ -211,7 +211,7 @@ public class C_SSH {
             try {
                 Thread.sleep(200);
             } catch (InterruptedException ex) {
-                Logger.getLogger(C_SSH.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(M_SSH.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         System.exit(0);

@@ -14,7 +14,7 @@ import org.quartz.JobExecutionException;
  *
  * @author happyli
  */
-public class C_Job implements Job {
+public class M_Job implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         String key=(String) jobExecutionContext

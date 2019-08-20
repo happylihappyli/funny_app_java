@@ -14,7 +14,7 @@ import org.mapdb.DBMaker;
  *
  * @author happyli
  */
-public class C_DB {
+public class M_DB {
     public DB DB_File(String strFile){
         DB db = DBMaker.fileDB(strFile).checksumHeaderBypass().make();
         return db;

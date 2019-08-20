@@ -5,7 +5,9 @@
  */
 package com.funnyai.tools;
 
+import com.funnyai.io.C_File;
 import com.funnyai.io.C_Property_File;
+import com.funnyai.io.Old.S_Dir;
 import com.funnyai.io.Old.S_File_Text;
 import com.funnyai.io.S_file;
 import static funnyai.JavaMain.scope_put;
@@ -17,14 +19,14 @@ import java.util.logging.Logger;
  *
  * @author happyli
  */
-public class C_File {
+public class M_File {
     public String read_ini(String strFile,String key){
         try {
             C_Property_File pFile=new C_Property_File(strFile);
             
             return pFile.Read(key);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(C_File.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_File.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
     }
@@ -43,5 +45,17 @@ public class C_File {
     
     public String read(String strFile1){
         return S_File_Text.Read(strFile1,"utf-8",10000);
+    }
+    
+    public C_File Read_Begin(String strFile1){
+        return S_file.main.Read_Begin(strFile1,"utf-8");
+    }
+    
+    public String read_line(C_File pFile){
+        return S_file.main.read_line(pFile);
+    }
+    
+    public void dir_init(String strDir){
+        S_Dir.InitDir(strDir);
     }
 }

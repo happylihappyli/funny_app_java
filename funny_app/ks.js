@@ -20,6 +20,8 @@ function read(strFile,index_score,index_right,index_error){
     var pFile = s_file.Read_Begin(strFile); 
     
     var strLine = s_file.read_line(pFile);
+    s_out.println(strLine);
+    
     while (strLine != null) {
         var strSplit=strLine.split(",");
         var pLine =new C_Line();
@@ -28,7 +30,9 @@ function read(strFile,index_score,index_right,index_error){
         pLine.Error=parseFloat(strSplit[index_error]);
         pTreap.insert(new com.funnyai.data.C_K_Double(pLine.Score),pLine);
         strLine = s_file.read_line(pFile);
+        if (strLine != null) s_out.println(strLine);
     }
+    
     pFile.Close();
 
     var pArray=[];
@@ -68,11 +72,7 @@ for (var i=0;i<pArray.length;i++){
     }
 }
 s_out.println(delta);
-
-
-
-
-
+s_sys.exit(0);
 
 
 

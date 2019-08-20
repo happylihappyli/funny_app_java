@@ -12,7 +12,7 @@ import org.mapdb.DBMaker;
  *
  * @author happyli
  */
-public class C_MapDB {
+public class M_MapDB {
     public DB init(String strFile2){
         return DBMaker.fileDB(strFile2).checksumHeaderBypass().make();
     }

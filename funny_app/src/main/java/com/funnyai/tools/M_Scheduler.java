@@ -23,14 +23,14 @@ import org.quartz.impl.StdSchedulerFactory;
  *
  * @author happyli
  */
-public class C_Scheduler {
+public class M_Scheduler {
     private Scheduler scheduler;
 
-    public C_Scheduler() {
+    public M_Scheduler() {
         try {
             this.scheduler = StdSchedulerFactory.getDefaultScheduler();
         } catch (SchedulerException ex) {
-            Logger.getLogger(C_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -39,7 +39,7 @@ public class C_Scheduler {
         try {
             scheduler.shutdown();
         } catch (SchedulerException ex) {
-            Logger.getLogger(C_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -47,7 +47,7 @@ public class C_Scheduler {
         try {
             scheduler.start();
         } catch (SchedulerException ex) {
-            Logger.getLogger(C_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -56,8 +56,8 @@ public class C_Scheduler {
             String job_key,String trigger_key,
             int hour,int minute){
         try {
-            // define the job and tie it to our C_Job class
-            JobDetail job = JobBuilder.newJob(C_Job.class)
+            // define the job and tie it to our M_Job class
+            JobDetail job = JobBuilder.newJob(M_Job.class)
                     .withIdentity(job_key)
                     .usingJobData("key", job_key)
                     .build();
@@ -74,7 +74,7 @@ public class C_Scheduler {
             scheduler.scheduleJob(job, trigger);
             
         } catch (SchedulerException ex) {
-            Logger.getLogger(C_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -84,8 +84,8 @@ public class C_Scheduler {
             String job_key,String trigger_key,
             int week,int hour,int minute){
         try {
-            // define the job and tie it to our C_Job class
-            JobDetail job = JobBuilder.newJob(C_Job.class)
+            // define the job and tie it to our M_Job class
+            JobDetail job = JobBuilder.newJob(M_Job.class)
                     .withIdentity(job_key)
                     .usingJobData("key", job_key)
                     .build();
@@ -101,7 +101,7 @@ public class C_Scheduler {
             scheduler.scheduleJob(job, trigger);
             
         } catch (SchedulerException ex) {
-            Logger.getLogger(C_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(M_Scheduler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
