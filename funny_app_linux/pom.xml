@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.funnyai.test</groupId>
-    <artifactId>funny_app</artifactId>
+    <artifactId>funny_app_linux</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -31,18 +31,12 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/rhino/js -->
-    <!--        <dependency>
-            <groupId>rhino</groupId>
-            <artifactId>js</artifactId>
-            <version>1.7R2</version>
-        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8_win32_x86_64 -->
+        
+        <!-- https://mvnrepository.com/artifact/com.eclipsesource.j2v8/j2v8_linux_x86_64 -->
         <dependency>
             <groupId>com.eclipsesource.j2v8</groupId>
-            <artifactId>j2v8_win32_x86_64</artifactId>
-            <version>4.6.0</version>
+            <artifactId>j2v8_linux_x86_64</artifactId>
+            <version>4.8.0</version>
         </dependency>
 
         <dependency>
@@ -96,7 +90,7 @@
                         <configuration>
                             <!--${project.build.directory} class的输出目录不做设置的话默认代表项目根目录的target目录；
                                 也可以使用“自定义文件夹/自定义文件夹 例如：a/b”，也可以使用绝对路径如：“D:\test” -->
-                            <outputDirectory>E:\happyli\Jar\funny_app</outputDirectory>
+                            <outputDirectory>E:\happyli\Jar\funny_app_linux</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -127,7 +121,7 @@
                 <version>1.0-SNAPSHOT</version>
                 <configuration>
                     <prefix>---</prefix>
-                    <upload>E:\happyli\Jar\funny_app\funny_app.jar</upload>
+                    <upload>E:\happyli\Jar\funny_app_linux\funny_app.jar</upload>
                 </configuration>
 
                 <executions>

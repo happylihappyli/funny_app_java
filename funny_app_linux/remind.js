@@ -46,9 +46,11 @@ function get_weather(city){
     var url="http://api.map.baidu.com/telematics/v3/weather?location="
     +encodeURIComponent(city)+"&output=json&ak=FGwyoLoXgYjb92dDdZWrfZ7a";
     var strJson=s_net.http_get(url);
-    //s_out.println(strJson);
-    var weather=s_json.JSONObject_XPath(strJson,"$.results[0].weather_data[0].weather");
-    return weather
+    s_out.println(strJson);
+    var weaher=s_json.JSONObject_XPath(strJson,"$.results[0].weather_data[0].weather");
+    //var obj=s_json.JSONObject(strJson);
+    //var obj2=obj.getJSONArray("results").get(0);
+    return weaher;//obj2.getJSONArray("weather_data").get(0).getString("weather");
 }
 
 var count=1;
@@ -56,7 +58,7 @@ var count=1;
 s_scheduler.init();
 s_scheduler.add_job_daily("带雨伞_1","tr1",7,5);
 s_scheduler.add_job_daily("带雨伞_2","tr2",7,35);
-s_scheduler.add_job_daily("test_1","tr_10_10",15,30);
+s_scheduler.add_job_daily("test_1","tr_10_10",15,10);
 
 s_scheduler.add_job_week("晒东西_1","tr2",6,9,35);
 s_scheduler.add_job_week("晒东西_2","tr2",7,9,35);
@@ -65,8 +67,6 @@ s_net.set_socket_server("http://robot6.funnyai.com:8000");
 
 s_out.println(get_weather("上海"));
 call_back_job("晒东西_1");
-
-
 //call_back_job("test_1");
 //*
 var a="";
@@ -74,9 +74,8 @@ while(a!="q"){
     a=s_sys.read_input("输入q，退出");
     s_sys.sleep(1);
 }
+//*/
 
 s_scheduler.stop();
 
-s_sys.exit(0);
 
-//*/
