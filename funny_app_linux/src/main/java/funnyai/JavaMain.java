@@ -149,6 +149,12 @@ public class JavaMain {
                     v8Console.registerJavaMethod(pObj,
                             strFunction,strFunction, new Class<?>[] { JSONObject.class });
                     break;
+                case "String,Integer":
+                    v8Console.registerJavaMethod(pObj,
+                            strFunction,strFunction, new Class<?>[] { 
+                                String.class,Integer.class });
+                    break;
+                    
                 case "String,String":
                     v8Console.registerJavaMethod(pObj,
                             strFunction,strFunction, new Class<?>[] { String.class,String.class });
