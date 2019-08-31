@@ -16,6 +16,9 @@ import java.io.InputStreamReader;
 import static java.lang.System.out;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+//import org.mozilla.javascript.Context;
+//import org.mozilla.javascript.Function;
+//import org.mozilla.javascript.Scriptable;
 
 /**
  *
@@ -32,6 +35,9 @@ public class M_SYS {
     }
     
     public void println(String a){
+        System.out.println(a);
+    }
+    public void println(Double a){
         System.out.println(a);
     }
     
@@ -81,9 +87,4 @@ public class M_SYS {
         return "";
     }
     
-//    public void js_functon(String Function,String Data){
-//        Function fct = (Function)scope.get(Function, scope);
-//        Object result = fct.call(ct, scope, scope, new Object[] {Data});
-//        out.println(result.toString());
-//    }
 }

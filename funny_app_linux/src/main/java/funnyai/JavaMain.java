@@ -17,6 +17,7 @@ import com.funnyai.tools.M_RSA;
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Object;
 import com.funnyai.io.C_File;
+import com.funnyai.tools.M_Treap;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -60,21 +61,32 @@ public class JavaMain {
             {"linux","String,Integer"},
             {"exit","Integer"},
             {"sleep","Integer"},
+            {"init_setting","String"},
+            {"init_session",""},
+            {"Path_Segmentation",""},
         };
         Register(v8,pSYS,"s_sys",arr1);
+        
         String[][] arr2={
             {"println","String"},
         };
         Register(v8,System.out,"s_out",arr2);
         String[][] arr3={
             {"JSONObject_XPath","String,String"},
+            {"JSONArray_length","String"},
+            {"JSONArray","String,String"},
         };
         Register(v8,new M_JSON(),"s_json",arr3);
+        
         String[][] arr4={
-            {"DB_File","String"},
-            {"map","DB,String"},
+            {"db_file","String,String"},
+            {"map","String,String"},
+            {"map_put","String,String,String"},
+            {"map_size","String"},
+            {"db_close","String"},
         };
         Register(v8,new M_DB(),"s_db",arr4);
+        
         String[][] arr5={
             {"init",""},
             {"stop",""},
@@ -97,8 +109,9 @@ public class JavaMain {
             {"Copy2File","String,String"},
             {"Delete","String"},
             {"read","String"},
-            {"Read_Begin","String"},
-            {"read_line","C_File"},
+            {"read_begin","String,String"},
+            {"read_line","String"},
+            {"close","String"},
             {"dir_init","String"},
         };
         Register(v8,new M_File(),"s_file",arr7);
@@ -107,10 +120,17 @@ public class JavaMain {
             {"init","String"},
         };
         Register(v8,new M_MapDB(),"s_mapdb",arr8);
+        
         String[][] arr9={
             {"decrypt_by_private","String,String"},
         };
         Register(v8,new M_RSA(),"s_rsa",arr9);
+        
+        
+        String[][] arr10={
+            {"new_treap","String"},
+        };
+        Register(v8,new M_Treap(),"s_treap",arr10);
         
         String js_script=S_File_Text.Read(strFile, "utf-8",10000);
         v8.executeScript(js_script);
@@ -141,6 +161,11 @@ public class JavaMain {
                     v8Console.registerJavaMethod(pObj,
                             strFunction,strFunction, new Class<?>[] { Integer.class });
                     break;
+                case "Double":
+                    v8Console.registerJavaMethod(pObj,
+                            strFunction,strFunction, new Class<?>[] { Double.class });
+                    break;
+                    
                 case "String":
                     v8Console.registerJavaMethod(pObj,
                             strFunction,strFunction, new Class<?>[] { String.class });
@@ -154,7 +179,6 @@ public class JavaMain {
                             strFunction,strFunction, new Class<?>[] { 
                                 String.class,Integer.class });
                     break;
-                    
                 case "String,String":
                     v8Console.registerJavaMethod(pObj,
                             strFunction,strFunction, new Class<?>[] { String.class,String.class });
@@ -162,6 +186,11 @@ public class JavaMain {
                 case "DB,String":
                     v8Console.registerJavaMethod(pObj,
                             strFunction,strFunction, new Class<?>[] { DB.class,String.class });
+                    break;
+                case "String,String,String":
+                    v8Console.registerJavaMethod(pObj,
+                            strFunction,strFunction, new Class<?>[] { 
+                                String.class,String.class,String.class });
                     break;
                 case "String,String,Integer,Integer":
                     v8Console.registerJavaMethod(pObj,

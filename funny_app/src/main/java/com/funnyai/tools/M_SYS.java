@@ -37,6 +37,9 @@ public class M_SYS {
     public void println(String a){
         System.out.println(a);
     }
+    public void println(Double a){
+        System.out.println(a);
+    }
     
     public String linux(String command,Integer wait_second){
         return S_Command.RunShell_Return(command, wait_second);

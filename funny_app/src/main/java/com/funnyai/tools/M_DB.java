@@ -5,23 +5,43 @@
  */
 package com.funnyai.tools;
 
+import com.funnyai.io.S_file;
+import funnyai.JavaMain;
 import java.util.concurrent.ConcurrentMap;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.HTreeMap;
 
 /**
  *
  * @author happyli
  */
 public class M_DB {
-    public DB DB_File(String strFile){
+    public void db_file(String key,String strFile){
         DB db = DBMaker.fileDB(strFile).checksumHeaderBypass().make();
-        return db;
+        
+        JavaMain.pMap.put(key,db);
     }
     
-    public ConcurrentMap map(DB db,String table){
-        
-        return db.hashMap(table).create();
+    public void db_close(String key){
+        DB db = (DB)JavaMain.pMap.get(key);
+        db.close();
+    }
+    
+    
+    public void map(String key,String table){
+        DB db=(DB)JavaMain.pMap.get(key);
+        ConcurrentMap pMap=db.hashMap(table).create();
+        JavaMain.pMap.put("map",pMap);
+    }
+    
+    public void map_put(String map,String key,String value){
+        ConcurrentMap pMap=(ConcurrentMap)JavaMain.pMap.get(map);
+        pMap.put(key, value);
+    }
+    public int map_size(String map){
+        ConcurrentMap pMap=(ConcurrentMap)JavaMain.pMap.get(map);
+        return pMap.size();
     }
 }

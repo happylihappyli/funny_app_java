@@ -10,6 +10,7 @@ import com.funnyai.io.C_Property_File;
 import com.funnyai.io.Old.S_Dir;
 import com.funnyai.io.Old.S_File_Text;
 import com.funnyai.io.S_file;
+import funnyai.JavaMain;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,12 +47,18 @@ public class M_File {
         return S_File_Text.Read(strFile1,"utf-8",10000);
     }
     
-    public C_File Read_Begin(String strFile1){
-        return S_file.main.Read_Begin(strFile1,"utf-8");
+    public void read_begin(String key,String strFile1){
+        JavaMain.pMap.put(key,S_file.main.Read_Begin(strFile1,"utf-8"));
     }
     
-    public String read_line(C_File pFile){
+    public String read_line(String key){
+        C_File pFile=(C_File) JavaMain.pMap.get(key);
         return S_file.main.read_line(pFile);
+    }
+    
+    public void close(String key){
+        C_File pFile=(C_File) JavaMain.pMap.get(key);
+        pFile.Close();
     }
     
     public void dir_init(String strDir){

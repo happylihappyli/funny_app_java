@@ -23,8 +23,8 @@ public class M_Job implements Job {
         System.out.println("key: "+key);
         //Object pObj=JavaMain.v8.executeJSFunction("call_back_job", key);
         
-        String strFile=JavaMain.strPath+"/call_back_job_"+key+".js";
-        strFile=strFile.replace("//", "/");
+        String strFile=JavaMain.strPath+"\\call_back_job_"+key+".js";
+        strFile=strFile.replace("\\\\", "\\");
         
         new JavaMain().Run(pSYS, strFile);
         

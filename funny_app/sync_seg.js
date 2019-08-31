@@ -9,8 +9,8 @@ function Init_Seg(){
     }
     
     
-    var mydb = s_db.DB_File(strFile);
-    var map = s_db.map(mydb,"map");
+    s_db.db_file("db",strFile);
+    s_db.map("db","map");
 
         
     var strURL = "https://www.funnyai.com/funnyai/json_list_ai_word.php";
@@ -28,11 +28,11 @@ function Init_Seg(){
         var IndexStr = strReturn.indexOf("[");
         if (IndexStr>-1){
             strReturn = strReturn.substring(IndexStr);
-            var token = s_json.JSONArray(strReturn);
-            Count=token.length();
+            s_json.JSONArray("json_array",strReturn);
+            Count=s_json.JSONArray_length("json_array");
             if (Count>0){
-                map.put("k"+p,strReturn);
-                map.put("size",p);
+                s_db.map_put("map","k"+p,strReturn);
+                s_db.map_put("map","size",p+"");
             }
         }
         
@@ -41,8 +41,8 @@ function Init_Seg(){
             break;
         }
     }
-    s_out.println("size="+map.size());
-    mydb.close();
+    s_out.println("size="+s_db.map_size("map"));
+    s_db.db_close("db");
 }
 
 //*/
@@ -56,6 +56,7 @@ s_sys.init_session();
 
 Init_Seg();
 
+s_sys.exit(0);
 
 
 

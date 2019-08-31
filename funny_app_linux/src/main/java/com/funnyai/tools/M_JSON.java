@@ -17,12 +17,15 @@ import org.json.JSONObject;
  */
 public class M_JSON {
     
-    public void JSONArray(
-            String key,String strReturn){
+    public void JSONArray(String key,String strReturn){
         JSONArray token = new JSONArray(strReturn);
         JavaMain.pMap.put(key, token);
     }
     
+    public int JSONArray_length(String key){
+        JSONArray token = (JSONArray)JavaMain.pMap.get(key);
+        return token.length();
+    }
     
     public void JSONObject_JSONArray(
             String key,String key2,String strPath){
