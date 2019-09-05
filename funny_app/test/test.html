@@ -1,0 +1,43 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="http://www.funnyai.com/Common/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://www.funnyai.com/Common/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="http://www.funnyai.com/Common/jQuery.md5.js"></script>
+<script type="text/javascript" src="http://www.funnyai.com/Common/js/viz.js"></script>
+</head>
+<body style="margin:0px">
+<textarea id="x" style="width:600px;height:300px;">
+digraph DecisionTree {
+ node [shape=box, style="filled, rounded", color="black", fontname=helvetica];
+ edge [fontname=helvetica];
+ 0 [label=<outlook = overcast<br/>nscore = 0.1020>, fillcolor="#00000000"];
+ 1 [label=<class = 0>, fillcolor="#00000000", shape=ellipse];
+ 0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"];
+ 2 [label=<humidity &le; 82.5000<br/>score = 0.1800>, fillcolor="#00000000"];
+ 0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"];
+ 3 [label=<class = 0>, fillcolor="#00000000", shape=ellipse];
+ 2 -> 3;
+ 4 [label=<class = 1>, fillcolor="#00000000", shape=ellipse];
+ 2 -> 4;
+}
+</textarea>
+<br>
+<div id="output"></div>
+<script>
+function update(){
+var graph = document.getElementById("output");
+var x=document.getElementById("x").value;
+var data={src:x,option:{engine: "dot", format: "svg"}};
+var result = Viz(data.src, data.options);
+//alert(result);
+var parser = new DOMParser();
+var svg = parser.parseFromString(result, "image/svg+xml").documentElement;
+svg.id = "svg_output";
+graph.appendChild(svg);
+}
+update();
+</script>
+
+</body>
+</html>

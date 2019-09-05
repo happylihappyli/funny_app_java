@@ -10,10 +10,16 @@ import com.funnyai.common.S_Command;
 import com.funnyai.common.Tools_Init;
 import com.funnyai.fs.AI_Var3;
 import com.funnyai.fs.C_Run_Session;
+import com.funnyai.io.Old.S_File;
+import funnyai.JavaMain;
+import java.awt.Desktop;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import static java.lang.System.out;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //import org.mozilla.javascript.Context;
@@ -74,6 +80,19 @@ public class M_SYS {
         }
     }
     
+    
+    public String path_jar(){
+        String path = System.getProperty("java.class.path");
+        int firstIndex = path.lastIndexOf(System.getProperty("path.separator")) + 1;
+        int lastIndex = path.lastIndexOf(File.separator) + 1;
+        path = path.substring(firstIndex, lastIndex);
+        return path;
+    }
+    
+    public String path(){
+        return JavaMain.strPath;
+    }
+    
     public String read_input(String strInfo){
         try {
             String strReturn=null;
@@ -85,6 +104,47 @@ public class M_SYS {
             Logger.getLogger(M_SYS.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
+    }
+    
+    public void open_url(String url){
+        if (url.startsWith("@")){
+            url=url.replace("@", JavaMain.strPath);
+            String[] strSplit=url.split("\\\\");
+            
+            //路径 .. 和前面一个目录抵消
+            url="";
+            for (int i=0;i<strSplit.length-1;i++){
+                if (strSplit[i+1].equals("..")){
+                    i+=1;
+                }else{
+                    url+=strSplit[i]+"\\";
+                }
+            }
+            url+=strSplit[strSplit.length-1];
+            if (S_File.Exists(url)){
+                out.println("exists");
+            }else{
+                out.println("not exists");
+            }
+        }
+        try {
+            String browser = "cmd.exe "+url;//"chrome.exe";//+url; 
+            Runtime.getRuntime().exec(new String[] { browser, url });
+        } catch (IOException ex) {
+            Logger.getLogger(M_SYS.class.getName()).log(Level.SEVERE, null, ex);
+        }
+//        
+//        try {
+//            Desktop desktop = Desktop.getDesktop();
+//            if (desktop.isDesktopSupported() && desktop.isSupported(Desktop.Action.BROWSE)) {
+//                URI uri = new URI(url);
+//                desktop.browse(uri);
+//            }
+//        } catch (IOException ex) {
+//            System.out.println(ex);
+//        } catch (URISyntaxException ex) {
+//            System.out.println(ex);
+//        }
     }
     
 }

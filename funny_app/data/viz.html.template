@@ -1,0 +1,31 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="http://www.funnyai.com/Common/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://www.funnyai.com/Common/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="http://www.funnyai.com/Common/jQuery.md5.js"></script>
+<script type="text/javascript" src="http://www.funnyai.com/Common/js/viz.js"></script>
+</head>
+<body style="margin:0px">
+<textarea id="x" style="width:600px;height:300px;">
+{sys.data.0}
+</textarea>
+<br>
+<div id="output"></div>
+<script>
+function update(){
+var graph = document.getElementById("output");
+var x=document.getElementById("x").value;
+var data={src:x,option:{engine: "dot", format: "svg"}};
+var result = Viz(data.src, data.options);
+//alert(result);
+var parser = new DOMParser();
+var svg = parser.parseFromString(result, "image/svg+xml").documentElement;
+svg.id = "svg_output";
+graph.appendChild(svg);
+}
+update();
+</script>
+
+</body>
+</html>

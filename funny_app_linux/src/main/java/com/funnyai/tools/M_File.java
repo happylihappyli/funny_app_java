@@ -11,6 +11,8 @@ import com.funnyai.io.Old.S_Dir;
 import com.funnyai.io.Old.S_File_Text;
 import com.funnyai.io.S_file;
 import funnyai.JavaMain;
+import static funnyai.JavaMain.strPath;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,15 +41,28 @@ public class M_File {
         S_file.main.Copy2File(strFile1,File2);
     }
     
-    public void Delete(String strFile1){
+    public void delete(String strFile1){
         S_file.main.Delete(strFile1);
     }
     
     public String read(String strFile1){
-        return S_File_Text.Read(strFile1,"utf-8",10000);
+        if (strFile1.startsWith("@")){
+            strFile1=strFile1.replace("@", JavaMain.strPath);
+        }
+        return S_File_Text.Read(strFile1,"utf-8",-1);
+    }
+    
+    public String save(String strFile1,String Content){
+        if (strFile1.startsWith("@")){
+            strFile1=strFile1.replace("@", JavaMain.strPath);
+        }
+        return S_File_Text.Write(strFile1,Content);
     }
     
     public void read_begin(String key,String strFile1){
+        if (strFile1.startsWith("@")){
+            strFile1=strFile1.replace("@", JavaMain.strPath);
+        }
         JavaMain.pMap.put(key,S_file.main.Read_Begin(strFile1,"utf-8"));
     }
     
