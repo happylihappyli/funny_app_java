@@ -23,6 +23,11 @@ public class M_Net {
         S_Net.SI_Send(event_type,stype,from,to,msg);
     }
     
+    public void upload(String host,Integer iPort,String username,String password,
+            String uploadFile,String directory){
+        S_net.main.SFtp_Upload(host, iPort, username, password, uploadFile, directory);
+    }
+    
     public void stop_socket(){
         S_Net.socket.close();
     }

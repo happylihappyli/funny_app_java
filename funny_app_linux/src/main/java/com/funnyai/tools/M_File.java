@@ -45,6 +45,11 @@ public class M_File {
         S_file.main.Delete(strFile1);
     }
     
+    public long size(String strFile){
+        File pFile=new File(strFile);
+        return pFile.length();
+    }
+    
     public String read(String strFile1){
         if (strFile1.startsWith("@")){
             strFile1=strFile1.replace("@", JavaMain.strPath);

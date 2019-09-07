@@ -117,6 +117,7 @@ public class JavaMain {
             {"http_get","s"},
             {"http_post","s,s"},
             {"ssh",new Class<?>[] { s,s,s,s,s,i}},
+            {"upload",new Class<?>[] { s,i,s,s,s,s}},
         };Register(v8,new M_Net(),"s_net",arr6);
         
         Object[][] arr7={
