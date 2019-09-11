@@ -12,19 +12,13 @@ import com.funnyai.fs.AI_Var3;
 import com.funnyai.fs.C_Run_Session;
 import com.funnyai.io.Old.S_File;
 import funnyai.JavaMain;
-import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import static java.lang.System.out;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import org.mozilla.javascript.Context;
-//import org.mozilla.javascript.Function;
-//import org.mozilla.javascript.Scriptable;
 
 /**
  *
@@ -40,6 +34,13 @@ public class M_SYS {
         return this.args[index];
     }
     
+    public String args_all(){
+        String strLine="";
+        for(int i=1;i<args.length;i++){
+            strLine+=args[i]+" ";
+        }
+        return strLine.trim();
+    }
     public void println(String a){
         System.out.println(a);
     }
@@ -133,18 +134,6 @@ public class M_SYS {
         } catch (IOException ex) {
             Logger.getLogger(M_SYS.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        
-//        try {
-//            Desktop desktop = Desktop.getDesktop();
-//            if (desktop.isDesktopSupported() && desktop.isSupported(Desktop.Action.BROWSE)) {
-//                URI uri = new URI(url);
-//                desktop.browse(uri);
-//            }
-//        } catch (IOException ex) {
-//            System.out.println(ex);
-//        } catch (URISyntaxException ex) {
-//            System.out.println(ex);
-//        }
     }
     
 }

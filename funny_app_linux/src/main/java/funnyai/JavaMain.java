@@ -61,6 +61,7 @@ public class JavaMain {
         //s_sys
         String[][] arr1={
             {"args","i"},
+            {"args_all",""},
             {"linux","String,Integer"},
             {"exit","i"},
             {"sleep","i"},
@@ -102,9 +103,9 @@ public class JavaMain {
         Object[][] arr5={
             {"init",""},
             {"stop",""},
-            {"add_job_daily",new Class<?>[] { s,s,Integer.class,Integer.class }},
+            {"add_job_daily",new Class<?>[] { s,s,i,i }},
             {"add_job_week",new Class<?>[] { 
-                                    s,s,Integer.class,Integer.class,Integer.class 
+                                    s,s,i,i,i 
                                 }},
         };Register(v8,new M_Scheduler(),"s_scheduler",arr5);
         
