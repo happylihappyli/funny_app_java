@@ -17,6 +17,8 @@ import com.funnyai.tools.M_RSA;
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Object;
 import com.funnyai.io.C_File;
+import com.funnyai.tools.M_AI;
+import com.funnyai.tools.M_Output;
 import com.funnyai.tools.M_Treap;
 import com.funnyai.tools.M_Tree;
 import java.io.BufferedReader;
@@ -80,7 +82,7 @@ public class JavaMain {
         String[][] arr2={
             {"println","s"},
         };
-        Register(v8,System.out,"s_out",arr2);
+        Register(v8,new M_Output(),"s_out",arr2);
         
         //s_json
         String[][] arr3={
@@ -153,6 +155,12 @@ public class JavaMain {
         Object[][] arr11={
             {"train",new Class<?>[] { s,i }},
         };Register(v8,new M_Tree(),"s_tree",arr11);
+        
+        
+        Object[][] arr12={
+            {"time",new Class<?>[] { s}},
+            {"时间",new Class<?>[] { s}},
+        };Register(v8,new M_AI(),"s_ai",arr12);
         
         String js_script=S_File_Text.Read(strFile, "utf-8",10000);
         v8.executeScript(js_script);

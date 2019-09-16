@@ -107,6 +107,7 @@ public class M_SYS {
         return "";
     }
     
+    
     public void open_url(String url){
         if (url.startsWith("@")){
             url=url.replace("@", JavaMain.strPath);
