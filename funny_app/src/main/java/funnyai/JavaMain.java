@@ -19,6 +19,7 @@ import com.eclipsesource.v8.V8Object;
 import com.funnyai.io.C_File;
 import com.funnyai.tools.M_AI;
 import com.funnyai.tools.M_Output;
+import com.funnyai.tools.M_String;
 import com.funnyai.tools.M_Treap;
 import com.funnyai.tools.M_Tree;
 import java.io.BufferedReader;
@@ -29,9 +30,6 @@ import static java.lang.System.out;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.JSONObject;
-import org.mapdb.DB;
-
 
 /**
  *
@@ -161,6 +159,12 @@ public class JavaMain {
             {"time",new Class<?>[] { s}},
             {"时间",new Class<?>[] { s}},
         };Register(v8,new M_AI(),"s_ai",arr12);
+        
+        
+        
+        Object[][] arr13={
+            {"urlencode",new Class<?>[] { s}},
+        };Register(v8,new M_String(),"s_string",arr13);
         
         String js_script=S_File_Text.Read(strFile, "utf-8",10000);
         v8.executeScript(js_script);
