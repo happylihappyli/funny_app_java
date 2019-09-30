@@ -12,6 +12,8 @@ import com.funnyai.fs.AI_Var3;
 import com.funnyai.fs.C_Run_Session;
 import com.funnyai.io.Old.S_File;
 import funnyai.JavaMain;
+import static funnyai.JavaMain.pSYS;
+import static funnyai.JavaMain.strPath;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +52,16 @@ public class M_SYS {
     
     public String linux(String command,Integer wait_second){
         return S_Command.RunShell_Return(command, wait_second);
+    }
+    
+    public String js(String strLines){
+        String[] args=strLines.split("\\|");
+        M_SYS pSYS = new M_SYS(args);
+        String strFile=args[0];
+        strPath=new File(strFile).getParent();
+        
+        String strReturn=new JavaMain().Run(pSYS, strFile);
+        return strReturn;
     }
     
     public void exit(Integer status){

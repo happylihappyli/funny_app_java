@@ -52,7 +52,7 @@ public class JavaMain {
         
     }
     
-    public void Run(M_SYS pSYS,String strFile){
+    public String Run(M_SYS pSYS,String strFile){
         
         v8 = V8.createV8Runtime();
         Class s=String.class;
@@ -73,6 +73,7 @@ public class JavaMain {
             {"Path_Segmentation",""},
             {"path",""},
             {"path_jar",""},
+            {"js","s"},
         };
         Register(v8,pSYS,"s_sys",arr1);
         
@@ -167,7 +168,9 @@ public class JavaMain {
         };Register(v8,new M_String(),"s_string",arr13);
         
         String js_script=S_File_Text.Read(strFile, "utf-8",10000);
-        v8.executeScript(js_script);
+        Object p=v8.executeScript(js_script);
+        String strReturn=p.toString();
+        return strReturn;
     }
     
     /**
@@ -213,6 +216,10 @@ public class JavaMain {
                         v8Console.registerJavaMethod(pObj,
                                 strFunction,strFunction, new Class<?>[] { String.class });
                         break;
+                    case "s[]":
+                        v8Console.registerJavaMethod(pObj,
+                                strFunction,strFunction, new Class<?>[] { String[].class });
+                        break;
                     case "s,i":
                     case "String,Integer":
                         v8Console.registerJavaMethod(pObj,
@@ -226,7 +233,7 @@ public class JavaMain {
                         break;
                     case "":
                         v8Console.registerJavaMethod(pObj,
-                                strFunction,strFunction, new Class<?>[] {  });
+                                strFunction,strFunction, new Class<?>[] {});
                         break;
                 }
             }else{
