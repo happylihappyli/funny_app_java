@@ -87,7 +87,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             case "antlr_js.ECMAScriptParser$EqualityExpressionContext":
                 return visitEqualityExpression((EqualityExpressionContext)ctx);
             case "antlr_js.ECMAScriptParser$LiteralExpressionContext":
-                return ctx.getText();
+                return this.visitLiteralExpression((LiteralExpressionContext) ctx);
             case "antlr_js.ECMAScriptParser$AssignmentExpressionContext":
                 return visitArgumentsExpression((ECMAScriptParser.ArgumentsExpressionContext)ctx);
             
@@ -108,6 +108,19 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     
     @Override
+    public Object visitLiteralExpression(ECMAScriptParser.LiteralExpressionContext ctx) {
+        LiteralContext p1=ctx.literal();
+        String value=p1.getText();
+        if (value.startsWith("\"")){
+            return value.substring(1, value.length()-1);
+        }
+        if ("null".equals(value)){
+            return null;
+        }
+        //if (JavaMain.bDebug) out.println(value);
+        return Double.parseDouble(value);// value;
+    }
+    @Override
     public Object visitEqualityExpression(ECMAScriptParser.EqualityExpressionContext ctx) {
         TerminalNode p=(TerminalNode)ctx.getChild(1);
         SingleExpressionContext pLeft= ctx.singleExpression(0);
@@ -116,14 +129,22 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         Object express1=parse_single_expression(pLeft);
         Object express2=parse_single_expression(pRight);
         
-        if (p.getText().equals("==")){
-            if (express1 == express2){
-                return true;
-            }
-        }else{
-            out.println("error visitEqualityExpression");
+        switch(p.getText()){
+            case  "==":
+                return (express1 == express2);
+            case "!==":
+//                if (express1==null){
+//                    out.println("stop");
+//                }
+                if ("null".equals(express2)){
+                    return (express1 != null);
+                }else{
+                    return (express1 != express2);
+                }
+            default:
+                out.println("error visitEqualityExpression");
+                return false;
         }
-        return false;
     }
     
     @Override
@@ -304,6 +325,25 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         this.pMap.put("function:0",ctx);
         return null;//visitChildren(ctx);
     }
+    
+    
+    @Override
+    public Object visitWhileStatement(ECMAScriptParser.WhileStatementContext ctx) {
+        out.println(ctx.getText()); 
+        ExpressionSequenceContext p1=ctx.expressionSequence();
+        Object pObj=this.visitExpressionSequence(p1);
+        //out.println(pObj.toString());
+        StatementContext p2=ctx.statement();
+
+        
+        while((boolean)pObj){
+            visitChildren(p2);
+            pObj=this.visitExpressionSequence(p1);
+        }
+        return null;
+    }
+    
+    
     public Object call_function(ECMAScriptParser.FunctionDeclarationContext ctx,
             ECMAScriptParser.ArgumentListContext pList) {
         if (JavaMain.bDebug) out.println("call function");
@@ -441,12 +481,14 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         if ("items.sort".equals(function)){
             out.println("stop");
         }
-
-        Object pObj=Function_SYS.call(function,value,this,pList);
-        if (pObj!=null){
-            return pObj;
+        if ("items.push".equals(function)){
+            out.println("stop");
         }
-        return visitChildren(ctx);
+
+        return Function_SYS.call(function,value,this,pList);
+//        if (pObj!=null){
+//        }
+//        return visitChildren(ctx);
     }
     
     

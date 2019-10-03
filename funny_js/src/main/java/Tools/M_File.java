@@ -13,6 +13,7 @@ import com.funnyai.io.S_file;
 import funnyai.JavaMain;
 import java.io.File;
 import java.io.FileNotFoundException;
+import static java.lang.System.out;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -74,7 +75,11 @@ public class M_File {
     
     public String read_line(MyVisitor pParent,String key){
         C_File pFile=(C_File) pParent.pMap.get(key);
-        return S_file.main.read_line(pFile);
+        String strLine=S_file.main.read_line(pFile);
+        if (strLine==null){
+            out.println("stop");
+        }
+        return strLine;
     }
     
     public void close(MyVisitor pParent,String key){

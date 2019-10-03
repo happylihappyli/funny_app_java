@@ -211,7 +211,14 @@ public class Function_SYS {
             String value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
-
+        
+        Object pObj=pParent.get_var(value);
+        if (pObj==null){
+            value="";
+        }else{
+            value=(String)pObj;
+        }
+        
         String[] strSplit=function.split("\\.");
         if (strSplit.length>1){
             switch(strSplit[0]){
@@ -230,7 +237,7 @@ public class Function_SYS {
                 case "s_json":
                     return json_call(strSplit[1],value,pParent,pList);
                 default:
-                    Object pObj=pParent.get_var(strSplit[0]);
+                    pObj=pParent.get_var(strSplit[0]);
                     if (pObj!=null){
                         switch(pObj.getClass().getName()){
                             case "java.util.ArrayList":
@@ -295,7 +302,7 @@ public class Function_SYS {
                 case "parseFloat":
                     
                     ECMAScriptParser.SingleExpressionContext left = pList.singleExpression(0);
-                    Object pObj=pParent.parse_single_expression(left);
+                    pObj=pParent.parse_single_expression(left);
                     
                     return pObj;
                 default:
