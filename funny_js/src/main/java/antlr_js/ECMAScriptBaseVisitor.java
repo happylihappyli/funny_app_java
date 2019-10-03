@@ -550,6 +550,7 @@ public class ECMAScriptBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
     
     @Override
     public T visitMemberIndexExpression(ECMAScriptParser.MemberIndexExpressionContext ctx) {
+        
         return visitChildren(ctx);
     }
 

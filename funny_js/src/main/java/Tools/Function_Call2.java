@@ -8,16 +8,16 @@ package Tools;
 import antlr_js.ECMAScriptParser;
 import funnyai.JavaMain;
 import static java.lang.System.out;
-import org.antlr.v4.runtime.tree.ParseTree;
+import java.util.ArrayList;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
  *
  * @author happyli
  */
-public class Function_Call extends MyVisitor{
+public class Function_Call2 extends MyVisitor{
     public Object pReturn=null;
-    public ECMAScriptParser.ArgumentListContext pList;
+    public ArrayList pList;
 
     
     public void Init(ECMAScriptParser.FunctionDeclarationContext ctx,
@@ -28,12 +28,12 @@ public class Function_Call extends MyVisitor{
             out.println("error");
         }
         ECMAScriptParser.FormalParameterListContext pCtx=ctx.formalParameterList();
-        for(int i=0;i<pList.singleExpression().size();i++){
-            ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);// .children.get(i);
+        for(int i=0;i<pList.size();i++){
+            Object pObj=pList.get(i);// .children.get(i);
             TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
             String strName=pName.getText();
-            out.println(pValue.getClass().getName());
-            Object pObj=this.parse_single_expression(pValue);
+            out.println(pObj.getClass().getName());
+            //Object pObj=this.parse_single_expression(pValue);
             switch(pObj.getClass().getName()){
                 case "java.lang.String":
                     String strValue=(String)pObj;

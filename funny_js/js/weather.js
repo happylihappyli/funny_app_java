@@ -2,7 +2,7 @@ function weather(city){
     var city2=s_string.urlencode(city);
     var url="http://api.map.baidu.com/telematics/v3/weather?location="+city2+"&output=json&ak=FGwyoLoXgYjb92dDdZWrfZ7a";
     var restult=s_net.http_get(url);
-    var obj=JSON.parse(restult);
+    var obj=s_json.parse(restult);
     var weather=obj.results[0].weather_data[0].weather;
     return weather;
 }

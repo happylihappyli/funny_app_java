@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.funnyai.tools;
+package Tools;
 
 import com.funnyai.io.C_File;
 import com.funnyai.io.C_Property_File;
@@ -63,20 +63,22 @@ public class M_File {
         return S_File_Text.Write(strFile1,Content);
     }
     
-    public void read_begin(String key,String strFile1){
+    public void read_begin(MyVisitor pParent,
+            String key,String strFile1){
+        
         if (strFile1.startsWith("@")){
             strFile1=strFile1.replace("@", JavaMain.strPath);
         }
-        JavaMain.pMap.put(key,S_file.main.Read_Begin(strFile1,"utf-8"));
+        pParent.pMap.put(key,S_file.main.Read_Begin(strFile1,"utf-8"));
     }
     
-    public String read_line(String key){
-        C_File pFile=(C_File) JavaMain.pMap.get(key);
+    public String read_line(MyVisitor pParent,String key){
+        C_File pFile=(C_File) pParent.pMap.get(key);
         return S_file.main.read_line(pFile);
     }
     
-    public void close(String key){
-        C_File pFile=(C_File) JavaMain.pMap.get(key);
+    public void close(MyVisitor pParent,String key){
+        C_File pFile=(C_File) pParent.pMap.get(key);
         pFile.Close();
     }
     

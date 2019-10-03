@@ -4049,7 +4049,10 @@ public class ECMAScriptParser extends Parser {
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof ECMAScriptVisitor ) return ((ECMAScriptVisitor<? extends T>)visitor).visitMemberDotExpression(this);
+			if ( visitor instanceof ECMAScriptVisitor ){
+                            T x=((ECMAScriptVisitor<? extends T>)visitor).visitMemberDotExpression(this);
+                            return x;
+                        }
 			else return visitor.visitChildren(this);
 		}
 	}

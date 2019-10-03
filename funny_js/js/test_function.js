@@ -5,7 +5,7 @@ function add(x){
 
 var y = 10;
 var x = add(100);
-out.println(x);
+s_out.println(x);
 
 if (y==100 && 1==1){
     y=add(100);
@@ -14,4 +14,4 @@ if (y==100 && 1==1){
 }else{
     y=add(10);
 }
-out.println(y);
+s_out.println(y);
