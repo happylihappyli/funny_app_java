@@ -195,8 +195,8 @@ public class Function_SYS {
             case "args":
                 {
                     ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
-                    int index=Integer.parseInt((String) pParent.parse_single_expression(pKey));
-                    
+                    int index=((Double) pParent.parse_single_expression(pKey)).intValue();
+                    //Integer.parseInt
                     return JavaMain.sys_args[index+1];
                 }
             default:
