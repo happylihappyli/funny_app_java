@@ -242,17 +242,13 @@ public class Function_SYS {
                                         return pList2;
                                     }
                                     case "sort":
-                                    {
                                         ECMAScriptParser.SingleExpressionContext pFun=pList.singleExpression(0);
                                         if ("antlr_js.ECMAScriptParser$FunctionExpressionContext".equals(pFun.getClass().getName())){
                                             
-                                            
-                                            
-                                                    
                                             pParent.visitFunctionExpression((ECMAScriptParser.FunctionExpressionContext) pFun);
                                             
-                                            ECMAScriptParser.FunctionDeclarationContext pFun2=
-                                                    (ECMAScriptParser.FunctionDeclarationContext)
+                                            ECMAScriptParser.FunctionExpressionContext pFun2=
+                                                    (ECMAScriptParser.FunctionExpressionContext)
                                                     pParent.pMap.get("function:0");
                                             if (pFun2==null){
                                                 out.println("no function:"+function);
@@ -276,7 +272,6 @@ public class Function_SYS {
                                             out.println("error");
                                             return null;
                                         }
-                                    }
 
                                     default:
                                         out.println("test");

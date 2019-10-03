@@ -314,7 +314,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         return pFun.pReturn;
     }
     
-    public Object call_function2(ECMAScriptParser.FunctionDeclarationContext ctx,
+    public Object call_function2(ECMAScriptParser.FunctionExpressionContext ctx,
             ArrayList pList) {
         if (JavaMain.bDebug) out.println("call function");
         Function_Call2 pFun=new Function_Call2();
@@ -441,9 +441,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         if ("items.sort".equals(function)){
             out.println("stop");
         }
-//        if ("items.push".equals(function)){
-//            out.println("stop");
-//        }
+
         Object pObj=Function_SYS.call(function,value,this,pList);
         if (pObj!=null){
             return pObj;

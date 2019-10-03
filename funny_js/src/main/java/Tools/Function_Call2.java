@@ -20,7 +20,7 @@ public class Function_Call2 extends MyVisitor{
     public ArrayList pList;
 
     
-    public void Init(ECMAScriptParser.FunctionDeclarationContext ctx,
+    public void Init(ECMAScriptParser.FunctionExpressionContext ctx,
             MyVisitor pParent){
         this.pParent=pParent;
         //初始化函数的变量
