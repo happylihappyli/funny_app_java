@@ -302,7 +302,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     public Object visitFunctionExpression(ECMAScriptParser.FunctionExpressionContext ctx) {
         out.print("visitFunctionExpression");
         this.pMap.put("function:0",ctx);
-        return visitChildren(ctx);
+        return null;//visitChildren(ctx);
     }
     public Object call_function(ECMAScriptParser.FunctionDeclarationContext ctx,
             ECMAScriptParser.ArgumentListContext pList) {
