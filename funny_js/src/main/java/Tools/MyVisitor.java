@@ -290,7 +290,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             case "antlr_js.ECMAScriptParser$AssignmentOperatorExpressionContext":
                 return this.visitAssignmentOperatorExpression((AssignmentOperatorExpressionContext) pExpression);
             case "antlr_js.ECMAScriptParser$PostIncrementExpressionContext":
-                return this.visitPostIncrementExpression(pExpression);
+                return this.visitPostIncrementExpression((PostIncrementExpressionContext) pExpression);
             default:
                 if (JavaMain.bDebug){
                     out.println(pExpression.getClass().getName());
@@ -310,8 +310,19 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     
     @Override
-    public T visitPostIncrementExpression(ECMAScriptParser.PostIncrementExpressionContext ctx) {
-        return visitChildren(ctx);
+    public Object visitPostIncrementExpression(ECMAScriptParser.PostIncrementExpressionContext ctx) {
+        SingleExpressionContext p=ctx.singleExpression();
+        String Name=p.getText();
+        Double pObj=(Double) this.get_var(Name);
+        pObj+=1;
+        if (this.pMap.containsKey(Name)){
+            pMap.put(Name, pObj);
+        }else if (pParent.pMap.containsKey(Name)){
+            pParent.pMap.put(Name, pObj);
+        }else{
+            out.println("error");
+        }
+        return null;// visitChildren(ctx);
     }
 
     
