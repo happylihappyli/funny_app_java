@@ -32,7 +32,7 @@ public class Function_Call2 extends MyVisitor{
             Object pObj=pList.get(i);// .children.get(i);
             TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
             String strName=pName.getText();
-            out.println(pObj.getClass().getName());
+            //out.println(pObj.getClass().getName());
             //Object pObj=this.parse_single_expression(pValue);
             switch(pObj.getClass().getName()){
                 case "java.lang.String":

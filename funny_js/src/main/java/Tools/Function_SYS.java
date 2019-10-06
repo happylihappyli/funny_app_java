@@ -8,6 +8,8 @@ import funnyai.JavaMain;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
@@ -20,7 +22,7 @@ import org.json.JSONObject;
 public class Function_SYS {
     public static Object math_call(
             String function,
-            String value,
+            Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         switch(function){
@@ -39,7 +41,7 @@ public class Function_SYS {
     
     public static Object out_call(
             String function,
-            String value,
+            Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         Object pObj;
@@ -60,7 +62,7 @@ public class Function_SYS {
     
     public static Object file_call(
             String function,
-            String value,
+            Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         Object pObj;
@@ -99,7 +101,7 @@ public class Function_SYS {
     
     public static Object net_call(
             String function,
-            String value,
+            Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         Object pObj;
@@ -109,7 +111,7 @@ public class Function_SYS {
                 if (pObj!=null){
                     value=(String) pObj;
                 }
-                return S_Net.http_get(value);
+                return S_Net.http_get((String)value);
             default:
                 out.println("没有这个函数:s_net."+function+"!");
                 break;
@@ -120,7 +122,7 @@ public class Function_SYS {
     
     public static Object string_call(
             String function,
-            String value,
+            Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         Object pObj;
@@ -130,7 +132,7 @@ public class Function_SYS {
                 if (pObj!=null){
                     value=(String) pObj;
                 }
-                return S_Strings.URL_Encode(value);
+                return S_Strings.URL_Encode((String)value);
             default:
                 out.println("没有这个函数:s_string."+function+"!");
                 break;
@@ -138,11 +140,202 @@ public class Function_SYS {
         return null;
     }
     
-    public static Object json_call(
+    
+    public static Object Array_call(
+            MyVisitor pParent,
             String function,
-            String value,
+            Object value,
+            Object pObj2,
+            ECMAScriptParser.ArgumentListContext pList){
+        
+        switch(function){
+            case "reduce":
+                return reduce_call(function,pParent,pObj2,pList);
+            case "map":
+                return map_call(function,pParent,pObj2,pList);
+            case "push":
+                ArrayList pList2=(ArrayList)pObj2;
+                pList2.add(value);
+                return pList2;
+            case "sort":
+                return sort_call(function,pParent,pObj2,pList);
+            default:
+                out.println("test");
+                break;
+        }
+        return null;
+    }
+    
+    
+    public static Object reduce_call(
+            String function, 
+            MyVisitor pParent, 
+            Object pObj2, 
+            ECMAScriptParser.ArgumentListContext pList) {
+        
+        ECMAScriptParser.SingleExpressionContext p1=pList.singleExpression(0);
+        ECMAScriptParser.SingleExpressionContext p2=pList.singleExpression(1);
+        
+//        out.println(p1.getText());
+//        out.println(p2.getText());
+        switch(p1.getClass().getName()){
+            case "antlr_js.ECMAScriptParser$IdentifierExpressionContext":
+                
+                Object p2_result=pParent.parse_single_expression(p2);
+                String name=(String)p1.getText();
+                ECMAScriptParser.FunctionDeclarationContext pFun1=
+(ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+name);// .pMap.get();
+                if (pFun1==null){
+                    out.println("no function:"+function);
+                    return "no function";
+                }else{
+                    BinaryOperator pFun2=(BinaryOperator) (Object x, Object y) -> {
+                        ArrayList pList1 = new ArrayList();
+                        pList1.add(x);
+                        pList1.add(y);
+                        double mReturn = ((Double) pParent.call_function(pFun1, pList1)).intValue();
+                        return mReturn;
+                    };
+
+                    ArrayList pList4=(ArrayList)pObj2;
+                    Object pResult3=pList4.stream().reduce(p2_result, pFun2);
+                    return pResult3;
+                }
+            case "antlr_js.ECMAScriptParser$FunctionExpressionContext":
+                pParent.visitFunctionExpression((ECMAScriptParser.FunctionExpressionContext) p1);
+
+                ECMAScriptParser.FunctionExpressionContext pFun2=
+(ECMAScriptParser.FunctionExpressionContext)pParent.get_var("function:0");
+                if (pFun2==null){
+                    out.println("no function:"+function);
+                    return "";
+                }else{
+                    BinaryOperator pFun4=(BinaryOperator) (Object x, Object y) -> {
+                        ArrayList pList1 = new ArrayList();
+                        pList1.add(x);
+                        pList1.add(y);
+                        double mReturn = ((Double) pParent.call_function2(pFun2, pList1)).intValue();
+                        return mReturn;
+                    };
+
+                    ArrayList pList4=(ArrayList)pObj2;
+                    Object pResult=pList4.stream().reduce(0, pFun4);
+                    return pResult;
+                }
+            default:
+                out.println("error");
+                return null;
+        }
+    }
+    
+    public static Object map_call(
+            String function,
+            MyVisitor pParent,
+            Object pObj2,
+            ECMAScriptParser.ArgumentListContext pList) {
+        
+        ECMAScriptParser.SingleExpressionContext pFun=pList.singleExpression(0);
+        switch(pFun.getClass().getName()){
+            case "antlr_js.ECMAScriptParser$FunctionExpressionContext":
+                pParent.visitFunctionExpression((ECMAScriptParser.FunctionExpressionContext) pFun);
+
+                ECMAScriptParser.FunctionExpressionContext pFun2=
+                    (ECMAScriptParser.FunctionExpressionContext)pParent.get_var("function:0");
+                if (pFun2==null){
+                    out.println("no function:"+function);
+                    return "";
+                }else{
+                    Function pFun4=(Function) (Object s) -> {
+                        ArrayList pList1 = new ArrayList();
+                        pList1.add(s);
+                        double mReturn = ((Double) pParent.call_function2(pFun2, pList1)).intValue();
+                        return mReturn;
+                    };
+
+                    ArrayList pList4=(ArrayList)pObj2;
+                    ArrayList<Object> results = new ArrayList<>();
+                    pList4.stream().map(pFun4).forEach(s -> results.add(s));
+                    return pList4;
+                }
+            default:
+                out.println("error");
+                return null;
+        }
+    }
+    
+    
+    public static Object sort_call(
+            String function,
+            MyVisitor pParent,
+            Object pObj2,
+            ECMAScriptParser.ArgumentListContext pList) {
+        
+        ECMAScriptParser.SingleExpressionContext pFun2=pList.singleExpression(0);
+        switch(pFun2.getClass().getName()){
+            case "antlr_js.ECMAScriptParser$FunctionExpressionContext":
+                pParent.visitFunctionExpression((ECMAScriptParser.FunctionExpressionContext) pFun2);
+
+                ECMAScriptParser.FunctionExpressionContext pFun5=
+                        (ECMAScriptParser.FunctionExpressionContext)pParent.get_var("function:0");
+                        //pParent.pMap.get("function:0");
+                if (pFun5==null){
+                    out.println("no function:"+function);
+                    return "";
+                }else{
+                    Comparator pFun6=new Comparator() {
+                        @Override
+                        public int compare(Object o1, Object o2) {
+                            ArrayList pList=new ArrayList();
+                            pList.add(o1);
+                            pList.add(o2);
+                            return ((Double)pParent.call_function2(pFun5,pList)).intValue();
+                        }
+                    };
+                    ArrayList pList3=(ArrayList)pObj2;
+                    pList3.sort(pFun6);
+                    return pList3;
+                }
+            default:
+                out.println("error");
+                return null;
+        }
+
+    }
+    
+    
+    public static Object default_call(
+            String ObjectName,
+            String function,
+            Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
+        
+        Object pObj2=pParent.get_var(ObjectName);
+        if (pObj2!=null){
+            switch(pObj2.getClass().getName()){
+                case "java.util.ArrayList":
+                    return Array_call(pParent,function,value,pObj2,pList);
+                case "java.lang.String":
+                    switch(function){
+                        case "split":
+                            String strLine=(String)pObj2;
+                            String value2=pList.getText();
+                            value2=(String)pParent.get_var(value2);
+                            return strLine.split(value2);
+                    }
+                    break;
+            }
+        }else{
+            out.println("没有这个对象:"+ObjectName);
+        }
+        return null;
+    }
+    public static Object json_call(
+            String function,
+            Object pObj2,
+            MyVisitor pParent,
+            ECMAScriptParser.ArgumentListContext pList){
+        String value=(String)pObj2;
         Object pObj;
         switch(function){
            case "parse":
@@ -167,7 +360,7 @@ public class Function_SYS {
     
     public static Object sys_call(
             String function,
-            String value,
+            Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         Object pObj;
@@ -213,102 +406,36 @@ public class Function_SYS {
             ECMAScriptParser.ArgumentListContext pList){
         
         Object pObj=pParent.get_var(value);
-        if (pObj==null){
-            value="";
-        }else{
-            value=(String)pObj;
-        }
-        
+
         String[] strSplit=function.split("\\.");
         if (strSplit.length>1){
             switch(strSplit[0]){
                 case "s_math":
-                    return math_call(strSplit[1],value,pParent,pList);
+                    return math_call(strSplit[1],pObj,pParent,pList);
                 case "s_out":
-                    return out_call(strSplit[1],value,pParent,pList);
+                    return out_call(strSplit[1],pObj,pParent,pList);
                 case "s_file":
-                    return file_call(strSplit[1],value,pParent,pList);
+                    return file_call(strSplit[1],pObj,pParent,pList);
                 case "s_net":
-                    return net_call(strSplit[1],value,pParent,pList);
+                    return net_call(strSplit[1],pObj,pParent,pList);
                 case "s_string":
-                    return string_call(strSplit[1],value,pParent,pList);
+                    return string_call(strSplit[1],pObj,pParent,pList);
                 case "s_sys":
-                    return sys_call(strSplit[1],value,pParent,pList);
+                    return sys_call(strSplit[1],pObj,pParent,pList);
                 case "s_json":
-                    return json_call(strSplit[1],value,pParent,pList);
+                    return json_call(strSplit[1],pObj,pParent,pList);
                 default:
-                    pObj=pParent.get_var(strSplit[0]);
-                    if (pObj!=null){
-                        switch(pObj.getClass().getName()){
-                            case "java.util.ArrayList":
-                                switch(strSplit[1]){
-                                    case "push":
-                                    {
-                                        ArrayList pList2=(ArrayList)pObj;
-                                        pList2.add(value);
-                                        return pList2;
-                                    }
-                                    case "sort":
-                                        ECMAScriptParser.SingleExpressionContext pFun=pList.singleExpression(0);
-                                        if ("antlr_js.ECMAScriptParser$FunctionExpressionContext".equals(pFun.getClass().getName())){
-                                            
-                                            pParent.visitFunctionExpression((ECMAScriptParser.FunctionExpressionContext) pFun);
-                                            
-                                            ECMAScriptParser.FunctionExpressionContext pFun2=
-                                                    (ECMAScriptParser.FunctionExpressionContext)
-                                                    pParent.pMap.get("function:0");
-                                            if (pFun2==null){
-                                                out.println("no function:"+function);
-                                                return "";
-                                            }else{
-                                                Comparator pFun3=new Comparator() {
-                                                    @Override
-                                                    public int compare(Object o1, Object o2) {
-                                                        ArrayList pList=new ArrayList();
-                                                        pList.add(o1);
-                                                        pList.add(o2);
-                                                        return (Integer)pParent.call_function2(pFun2,pList);
-                                                    }
-                                                };
-                                                
-                                                ArrayList pList2=(ArrayList)pObj;
-                                                pList2.sort(pFun3);
-                                                return pList2;
-                                            }
-                                        }else{
-                                            out.println("error");
-                                            return null;
-                                        }
-
-                                    default:
-                                        out.println("test");
-                                        break;
-                                }
-                            case "java.lang.String":
-                                
-                                switch(strSplit[1]){
-                                    case "split":
-                                        String strLine=(String)pObj;
-                                        return strLine.split(value);
-                                }
-                                break;
-                        }
-                    }else{
-                        out.println("没有这个对象:"+strSplit[0]);
-                    }
+                    return default_call(strSplit[0],strSplit[1],pObj,pParent,pList);
             }
         }else{
             switch(function){
                 case "parseFloat":
-                    
                     ECMAScriptParser.SingleExpressionContext left = pList.singleExpression(0);
                     pObj=pParent.parse_single_expression(left);
-                    
-                    return pObj;
+                    return Double.parseDouble((String)pObj);
                 default:
                     ECMAScriptParser.FunctionDeclarationContext pFun=
-                            (ECMAScriptParser.FunctionDeclarationContext)
-                            pParent.pMap.get("function:"+function);
+(ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+function);
                     if (pFun==null){
                         out.println("no function:"+function);
                     }else{
@@ -320,5 +447,6 @@ public class Function_SYS {
         
         return null;
     }
-     
+
+
 }

@@ -8,6 +8,7 @@ package Tools;
 import antlr_js.ECMAScriptParser;
 import funnyai.JavaMain;
 import static java.lang.System.out;
+import java.util.ArrayList;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -18,6 +19,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class Function_Call extends MyVisitor{
     public Object pReturn=null;
     public ECMAScriptParser.ArgumentListContext pList;
+    public ArrayList pList2;
 
     
     public void Init(ECMAScriptParser.FunctionDeclarationContext ctx,
@@ -32,8 +34,39 @@ public class Function_Call extends MyVisitor{
             ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);// .children.get(i);
             TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
             String strName=pName.getText();
-            out.println(pValue.getClass().getName());
+            //out.println(pValue.getClass().getName());
             Object pObj=this.parse_single_expression(pValue);
+            switch(pObj.getClass().getName()){
+                case "java.lang.String":
+                    String strValue=(String)pObj;
+                    if (strValue.startsWith("\"")){
+                        strValue=strValue.substring(1,strValue.length()-1);
+                    }
+                    if (JavaMain.bDebug) out.println(strName+"="+strValue);
+                    pMap.put(strName,strValue);
+                    break;
+                default:
+                    pMap.put(strName,pObj);
+                    break;
+            }
+        }
+    }
+    
+    
+    public void Init2(ECMAScriptParser.FunctionDeclarationContext ctx,
+            MyVisitor pParent){
+        this.pParent=pParent;
+        //初始化函数的变量
+        if (ctx==null){
+            out.println("error");
+        }
+        ECMAScriptParser.FormalParameterListContext pCtx=ctx.formalParameterList();
+        for(int i=0;i<pList2.size();i++){
+            //ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);// .children.get(i);
+            TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
+            String strName=pName.getText();
+            //out.println(pValue.getClass().getName());
+            Object pObj=pList2.get(i);
             switch(pObj.getClass().getName()){
                 case "java.lang.String":
                     String strValue=(String)pObj;

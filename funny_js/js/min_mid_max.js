@@ -37,7 +37,7 @@ function read(strFile,index){
       return (a-b);
     });
 
-    var items2 = items.map(function(val,index){
+    var items2 = items.map(function(val){
         return (val-avg)*(val-avg);
     });
     

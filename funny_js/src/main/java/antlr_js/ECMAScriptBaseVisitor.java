@@ -36,7 +36,6 @@ public class ECMAScriptBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
     
     @Override
     public T visitStatement(ECMAScriptParser.StatementContext ctx) {
-        //out.println("a");
         return visitChildren(ctx);
     }
 
