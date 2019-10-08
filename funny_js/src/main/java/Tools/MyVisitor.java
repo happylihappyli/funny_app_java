@@ -522,6 +522,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 switch (express1.getClass().getName()){
                     case "java.lang.Double":
                         return (Double)express1-(Double)express2;
+                    case "java.lang.Integer":
+                        return (Integer)express1-(Double)express2;
                     default:
                         out.println("error");
                         break;
@@ -658,6 +660,15 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 case "org.json.JSONObject":
                     Object pObj2=((org.json.JSONObject)pResult).get(strProperty);
                     return pObj2;
+                case "java.util.ArrayList":
+                        switch(strProperty){
+                            case "length":
+                                return ((ArrayList)pResult).size();
+                            default:
+                                if (JavaMain.bDebug){
+                                    out.println(pResult.getClass().getName());
+                                }
+                        }
                 case "[Ljava.lang.String;":
                     switch(strProperty){
                         case "length":
@@ -685,23 +696,34 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         SingleExpressionContext p1=ctx.singleExpression();
         ExpressionSequenceContext p2=ctx.expressionSequence();
         
-//        if (JavaMain.bDebug){
-//            out.println(p1.getText());
-//        }
-//        if (JavaMain.bDebug){
-//            out.println(p2.getText());
-//        }
         
         Object p1_result=this.parse_single_expression(p1);
         Object p2_result=this.visitExpressionSequence(p2);
         
         switch(p1_result.getClass().getName()){
+            case "java.util.ArrayList":
+                ArrayList pArrayList=(ArrayList) p1_result;
+                Object index=this.get_var(p2.getText());
+                return pArrayList.get(((Long)index).intValue());
             case "org.json.JSONArray":
                 org.json.JSONArray pArray=(org.json.JSONArray) p1_result;
-                int index=Integer.parseInt(p2.getText());
-                return pArray.get(index);
+                int index_jsonarray=Integer.parseInt(p2.getText());
+                return pArray.get(index_jsonarray);
             case "[Ljava.lang.String;":
-                int index2=Integer.valueOf((String)p2_result);
+                int index2=0;
+                switch(p2_result.getClass().getName()){
+                    case "java.lang.String":
+                        index2=Integer.valueOf((String)p2_result);
+                        break;
+                    case "java.lang.Double":
+                        index2=((Double)p2_result).intValue();
+                        break;
+                    default:
+                        if (JavaMain.bDebug){
+                            out.println(p1_result.getClass().getName());
+                        }
+                        break;
+                }
                 return ((String[])p1_result)[index2];
             default:
                 if (JavaMain.bDebug){

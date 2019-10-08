@@ -32,6 +32,11 @@ public class Function_SYS {
                 Double express1=(Double) pParent.parse_single_expression(left);
                 Double express2=(Double) pParent.parse_single_expression(right);
                 return Math.pow(express1, express2);
+                
+            case "round":
+                ECMAScriptParser.SingleExpressionContext left1 = pList.singleExpression(0);
+                Double express3=(Double) pParent.parse_single_expression(left1);
+                return Math.round(express3);
             default:
                 out.println("没有这个函数:s_math."+function+"!");
                 break;
@@ -409,7 +414,7 @@ public class Function_SYS {
 
         String[] strSplit=function.split("\\.");
         if (strSplit.length>1){
-            switch(strSplit[0]){
+            switch(strSplit[0].toLowerCase()){
                 case "s_math":
                     return math_call(strSplit[1],pObj,pParent,pList);
                 case "s_out":
@@ -424,6 +429,8 @@ public class Function_SYS {
                     return sys_call(strSplit[1],pObj,pParent,pList);
                 case "s_json":
                     return json_call(strSplit[1],pObj,pParent,pList);
+                case "math":
+                    return math_call(strSplit[1],pObj,pParent,pList);
                 default:
                     return default_call(strSplit[0],strSplit[1],pObj,pParent,pList);
             }
