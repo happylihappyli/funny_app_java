@@ -49,12 +49,24 @@ public class Function_SYS {
             Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
-        Object pObj;
+        //Object pObj;
         switch(function){
             case "println":
-                pObj=pParent.get_var(value);
-                if (pObj!=null){
-                    out.println(pObj.toString());
+                
+                switch(value.getClass().getName()){
+                    case "java.lang.String":
+                        value=pParent.string_process((String)value);
+                        out.println(value);
+                        break;
+                    case "java.lang.Integer":
+                        out.println(value);
+                        break;
+                    case "java.lang.Double":
+                        out.println(value);
+                        break;
+                    default:
+                        out.println(value);
+                        break;
                 }
                 return null;
             default:
@@ -181,8 +193,6 @@ public class Function_SYS {
         ECMAScriptParser.SingleExpressionContext p1=pList.singleExpression(0);
         ECMAScriptParser.SingleExpressionContext p2=pList.singleExpression(1);
         
-//        out.println(p1.getText());
-//        out.println(p2.getText());
         switch(p1.getClass().getName()){
             case "antlr_js.ECMAScriptParser$IdentifierExpressionContext":
                 
@@ -195,15 +205,27 @@ public class Function_SYS {
                     return "no function";
                 }else{
                     BinaryOperator pFun2=(BinaryOperator) (Object x, Object y) -> {
+                        Object pObj=pParent.get_var("reduce_sum");
+                        int reduce_sum=0;
+                        if (pObj!=null){
+                            reduce_sum=(int)pObj;
+                        }
                         ArrayList pList1 = new ArrayList();
                         pList1.add(x);
                         pList1.add(y);
-                        double mReturn = ((Double) pParent.call_function(pFun1, pList1)).intValue();
+                        reduce_sum+=1;
+                        pParent.put_var("reduce_sum", reduce_sum);
+                        
+                        double mReturn = (Double) pParent.call_function(pFun1, pList1);
+                        //out.println(reduce_sum+"="+mReturn);
                         return mReturn;
                     };
 
                     ArrayList pList4=(ArrayList)pObj2;
                     Object pResult3=pList4.stream().reduce(p2_result, pFun2);
+                    
+                    Object pObj=pParent.get_var("reduce_sum");
+                    out.println(pObj+"");
                     return pResult3;
                 }
             case "antlr_js.ECMAScriptParser$FunctionExpressionContext":
@@ -253,14 +275,33 @@ public class Function_SYS {
                     Function pFun4=(Function) (Object s) -> {
                         ArrayList pList1 = new ArrayList();
                         pList1.add(s);
-                        double mReturn = ((Double) pParent.call_function2(pFun2, pList1)).intValue();
+                        Object pObj=pParent.call_function2(pFun2, pList1);
+                        
+                        double mReturn =0;
+                        switch (pObj.getClass().getName()){
+                            case "java.lang.Double":
+                                mReturn=(Double)pObj;
+                                break;
+                            case "java.lang.Integer":
+                                mReturn=(Integer)pObj+0.0;
+                                break;
+                            default:
+                                mReturn=Double.parseDouble((String)pObj);
+                                break;
+                        }
                         return mReturn;
                     };
 
                     ArrayList pList4=(ArrayList)pObj2;
                     ArrayList<Object> results = new ArrayList<>();
                     pList4.stream().map(pFun4).forEach(s -> results.add(s));
-                    return pList4;
+                    
+                    double sum=0;
+                    for (int i=0;i<results.size();i++){
+                        sum+=(Double)results.get(i);
+                    }
+                    out.println(sum+"");
+                    return results;
                 }
             default:
                 out.println("error");
@@ -374,9 +415,9 @@ public class Function_SYS {
             case "exit":
                 pObj=pParent.get_var(value);
                 if (pObj!=null){
-                    value=(String) pObj;
+                    value=(Double) pObj;
                 }
-                System.exit(Integer.valueOf((String)value));
+                System.exit(((Double)value).intValue());
             case "sleep":
                 pObj=pParent.get_var(value);
                 if (pObj!=null){
@@ -406,11 +447,11 @@ public class Function_SYS {
     
     
     public static Object call(String function,
-            String value,
+            Object pValue,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         
-        Object pObj=pParent.get_var(value);
+        Object pObj=pValue;//pParent.get_var(pValue);
 
         String[] strSplit=function.split("\\.");
         if (strSplit.length>1){
@@ -426,7 +467,7 @@ public class Function_SYS {
                 case "s_string":
                     return string_call(strSplit[1],pObj,pParent,pList);
                 case "s_sys":
-                    return sys_call(strSplit[1],pObj,pParent,pList);
+                    return sys_call(strSplit[1],pValue,pParent,pList);
                 case "s_json":
                     return json_call(strSplit[1],pObj,pParent,pList);
                 case "math":
