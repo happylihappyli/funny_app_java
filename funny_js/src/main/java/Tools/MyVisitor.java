@@ -815,13 +815,13 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         SingleExpressionContext pExpression=ctx.singleExpression();
         
         String strProperty=pName.getText();
-        if (JavaMain.bDebug){
-            out.println(strProperty);
-        }
+//        if (JavaMain.bDebug){
+//            out.println(strProperty);
+//        }
         String ObjectName=pExpression.getText();
-        if (JavaMain.bDebug){
-            out.println(ObjectName);
-        }
+//        if (JavaMain.bDebug){
+//            out.println(ObjectName);
+//        }
         
         Object pResult;
         switch(pExpression.getClass().getName()){
