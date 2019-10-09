@@ -9,7 +9,6 @@ import antlr_js.ECMAScriptParser;
 import funnyai.JavaMain;
 import static java.lang.System.out;
 import java.util.ArrayList;
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
@@ -17,7 +16,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * @author happyli
  */
 public class Function_Call extends MyVisitor{
-    public Object pReturn=null;
     public ECMAScriptParser.ArgumentListContext pList;
     public ArrayList pList2;
 
@@ -30,6 +28,9 @@ public class Function_Call extends MyVisitor{
             out.println("error");
         }
         ECMAScriptParser.FormalParameterListContext pCtx=ctx.formalParameterList();
+        if (pList==null){
+            return ;
+        }
         for(int i=0;i<pList.singleExpression().size();i++){
             ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);// .children.get(i);
             TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
@@ -43,10 +44,12 @@ public class Function_Call extends MyVisitor{
                         strValue=strValue.substring(1,strValue.length()-1);
                     }
                     if (JavaMain.bDebug) out.println(strName+"="+strValue);
-                    pMap.put(strName,strValue);
+                    this.put_var(strName, strValue); //
+                    //pMap.put(strName,strValue);
                     break;
                 default:
-                    pMap.put(strName,pObj);
+                    this.put_var(strName, pObj); //
+                    //pMap.put(strName,pObj);
                     break;
             }
         }
@@ -74,10 +77,12 @@ public class Function_Call extends MyVisitor{
                         strValue=strValue.substring(1,strValue.length()-1);
                     }
                     if (JavaMain.bDebug) out.println(strName+"="+strValue);
-                    pMap.put(strName,strValue);
+                    this.put_var(strName, strValue); //
+                    //pMap.put(strName,strValue);
                     break;
                 default:
-                    pMap.put(strName,pObj);
+                    this.put_var(strName, pObj); //
+                    //pMap.put(strName,pObj);
                     break;
             }
         }
@@ -89,7 +94,7 @@ public class Function_Call extends MyVisitor{
         ECMAScriptParser.ExpressionSequenceContext p=ctx.expressionSequence();
         Object pObj=this.visitExpressionSequence(p);//visitChildren(ctx);;
         
-        pReturn=pObj;
+        pData.pReturn=pObj;
         return pObj;
     }
     

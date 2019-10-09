@@ -72,6 +72,7 @@ for(var i=0;i<strSplit.length;i++){
 }
 s_out.println(line);
 
+s_sys.sleep(10);
 
 s_sys.exit(0);
 

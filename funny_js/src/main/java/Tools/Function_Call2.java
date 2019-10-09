@@ -41,10 +41,10 @@ public class Function_Call2 extends MyVisitor{
                         strValue=strValue.substring(1,strValue.length()-1);
                     }
                     if (JavaMain.bDebug) out.println(strName+"="+strValue);
-                    pMap.put(strName,strValue);
+                    this.put_var(strName, strValue); //pMap.put(strName,strValue);
                     break;
                 default:
-                    pMap.put(strName,pObj);
+                    this.put_var(strName, pObj); //pMap.put(strName,pObj);
                     break;
             }
         }

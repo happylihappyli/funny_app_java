@@ -70,11 +70,11 @@ public class M_File {
         if (strFile1.startsWith("@")){
             strFile1=strFile1.replace("@", JavaMain.strPath);
         }
-        pParent.pMap.put(key,S_file.main.Read_Begin(strFile1,"utf-8"));
+        pParent.pData.pMap.put(key,S_file.main.Read_Begin(strFile1,"utf-8"));
     }
     
     public String read_line(MyVisitor pParent,String key){
-        C_File pFile=(C_File) pParent.pMap.get(key);
+        C_File pFile=(C_File) pParent.pData.pMap.get(key);
         String strLine=S_file.main.read_line(pFile);
         if (strLine==null){
             out.println("stop");
@@ -83,7 +83,7 @@ public class M_File {
     }
     
     public void close(MyVisitor pParent,String key){
-        C_File pFile=(C_File) pParent.pMap.get(key);
+        C_File pFile=(C_File) pParent.pData.pMap.get(key);
         pFile.Close();
     }
     

@@ -7,7 +7,6 @@ import funnyai.JavaMain;
 import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
@@ -17,7 +16,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 public class MyVisitor extends ECMAScriptBaseVisitor{
 
     public MyVisitor pParent=null;
-    public TreeMap pMap = new TreeMap();
+    public Function_Data pData=new Function_Data();
     
     
     @Override 
@@ -35,9 +34,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         if (pObj==null){
             out.println("break");
         }
-//        if (JavaMain.bDebug){
-//            out.println(pObj.getClass().getName());
-//        }
 
         switch(pObj.getClass().getName().toLowerCase()){
             case "java.lang.string":
@@ -123,7 +119,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 iResult=(boolean)pObj;
                 break;
             default:
-                if (JavaMain.bDebug) out.println(pObj.getClass().getName());
+                if (JavaMain.bDebug){
+                    out.println(pObj.getClass().getName());
+                }
                 break;
         }
         while (iResult){
@@ -132,9 +130,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             pObj=this.visitExpressionSequence(p1);
             iResult=(boolean)pObj;
         }
-        
-        
-        out.println("a");
         return null;
     }
     
@@ -220,6 +215,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         switch(p.getText()){
             case  "==":
                 return (express1 == express2);
+            case "!=":
             case "!==":
                 if ("null".equals(express2)){
                     return (express1 != null);
@@ -234,9 +230,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     @Override
     public Object visitExpressionStatement(ECMAScriptParser.ExpressionStatementContext ctx) {
-        if ("strSplit.length".equals(ctx.getText())){
-            out.println("stop");
-        }
+//        if ("strSplit.length".equals(ctx.getText())){
+//            out.println("stop");
+//        }
         return visitChildren(ctx);
     }
 
@@ -250,27 +246,32 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         }
         return visitChildren(ctx);
     }
+    
+    public void put_var(Function_Data pData2,String key,Object pObj){
+        pData2.pMap.put(key,pObj);
+    }
+    
     public void put_var(String key,Object pObj){
-        if (this.pMap.containsKey(key)){
-            this.pMap.put(key,pObj);
+        if (pData.pMap.containsKey(key)){
+            pData.pMap.put(key,pObj);
             return ;
         }else{
             if (this.pParent!=null){
-                if (this.pParent.pMap.containsKey(key)){
-                    pParent.pMap.put(key,pObj);
+                if (this.pParent.pData.pMap.containsKey(key)){
+                    pParent.pData.pMap.put(key,pObj);
                     return ;
                 }else{
                     while(pParent.pParent!=null){
                         pParent=pParent.pParent;
-                        if (pParent!=null && pParent.pMap.containsKey(key)){
-                            pParent.pMap.put(key,pObj);
+                        if (pParent!=null && pParent.pData.pMap.containsKey(key)){
+                            pParent.pData.pMap.put(key,pObj);
                             return ;
                         }
                     }
                 }
             }
         }
-        this.pMap.put(key,pObj);
+        pData.pMap.put(key,pObj);
     }
     
     public Object get_var(Object pObj){
@@ -290,17 +291,17 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 if (key.startsWith("\"")){
                     return key.substring(1,key.length()-1);
                 }
-
-                if (this.pMap.containsKey(key)){
-                    return this.pMap.get(key);
+                
+                if (pData.pMap.containsKey(key)){
+                    return pData.pMap.get(key);
                 }
-                if (pParent!=null && pParent.pMap.containsKey(key)){
-                    return pParent.pMap.get(key);
+                if (pParent!=null && pParent.pData.pMap.containsKey(key)){
+                    return pParent.pData.pMap.get(key);
                 }
                 while(pParent!=null && pParent.pParent!=null){
                     pParent=pParent.pParent;
-                    if (pParent!=null && pParent.pMap.containsKey(key)){
-                        return pParent.pMap.get(key);
+                    if (pParent!=null && pParent.pData.pMap.containsKey(key)){
+                        return pParent.pData.pMap.get(key);
                     }
                 }
                 //return key;
@@ -325,14 +326,21 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 iResult=(boolean)pObj;
                 break;
             default:
-                if (JavaMain.bDebug) out.println(pObj.getClass().getName());
+                if (JavaMain.bDebug){
+                    out.println(pObj.getClass().getName());
+                }
                 break;
         }
         if (iResult){
-            return visitChildren(pIf);
+            if (pIf!=null){
+                return visitChildren(pIf);
+            }
         }else{
-            return visitChildren(pElse);
+            if (pElse!=null){
+                return visitChildren(pElse);
+            }
         }
+        return null;
     }
     
     
@@ -364,9 +372,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     @Override
     public Object visitExpressionSequence(ECMAScriptParser.ExpressionSequenceContext ctx) {
-        if ("strSplit.length".equals(ctx.getText())){
-            out.println("stop");
-        }
+//        if ("strSplit.length".equals(ctx.getText())){
+//            out.println("stop");
+//        }
         SingleExpressionContext pExpression=ctx.singleExpression(0);
         
         switch(pExpression.getClass().getName()){
@@ -489,10 +497,25 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext pRight = ctx.singleExpression(1);
         String str1=pLeft.getText();
         Object pObj=parse_single_expression(pRight);
+        if (str1.startsWith("this.")){
+            str1=str1.split("\\.")[1];
+        }else if (str1.contains(".")){
+            String[] strSplit=str1.split("\\.");
+            String Object_Name=strSplit[0];
+            Function_Data pData2=(Function_Data) this.get_var(Object_Name);
+            this.put_var(pData2,strSplit[1], pObj);
+            return pObj;
+        }
         this.put_var(str1,pObj);
-        return "";
+        return pObj;
     }
     
+    @Override
+    public Object visitFunctionBody(ECMAScriptParser.FunctionBodyContext ctx) {
+        out.print("aa");
+
+        return visitChildren(ctx);
+    }
     
     @Override
     public Object visitFunctionDeclaration(ECMAScriptParser.FunctionDeclarationContext ctx) {
@@ -512,7 +535,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     @Override
     public Object visitWhileStatement(ECMAScriptParser.WhileStatementContext ctx) {
-        out.println(ctx.getText()); 
+        //out.println(ctx.getText()); 
         ExpressionSequenceContext p1=ctx.expressionSequence();
         Object pObj=this.visitExpressionSequence(p1);
         //out.println(pObj.toString());
@@ -526,15 +549,67 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         return null;
     }
     
+    @Override
+    public Object visitNewExpression(ECMAScriptParser.NewExpressionContext ctx) {
+        ArgumentsContext pA=ctx.arguments();
+        if (pA!=null){
+            out.println("stop");
+        }
+        SingleExpressionContext pS=ctx.singleExpression();
+        
+        switch(pS.getClass().getName()){
+            case "antlr_js.ECMAScriptParser$MultiplicativeExpressionContext":
+                //return visitMultiplicativeExpression((ECMAScriptParser.MultiplicativeExpressionContext) ctx);
+                
+            case "antlr_js.ECMAScriptParser$ArgumentsExpressionContext":
+                ArgumentsExpressionContext pS2=(ArgumentsExpressionContext) pS;
+                ECMAScriptParser.SingleExpressionContext p1=pS2.singleExpression();
+                ECMAScriptParser.ArgumentsContext p2= pS2.arguments();
+                ECMAScriptParser.ArgumentListContext pList=p2.argumentList();
+                Object pObj=null;//this.visitArgumentList(pList);
+                if (pList!=null){
+                    pObj=this.visitArgumentList(pList);
+                }else{
+                    out.println("null");
+                }
+                String function=p1.getText();
+
+                
+                ECMAScriptParser.FunctionDeclarationContext pFun=
+(ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+function);
+                if (pFun==null){
+                    out.println("no function:"+function);
+                }else{
+                    Function_Data pData=pParent.call_function_return_data(pFun,pList);
+                    return pData;
+                }
+        }
+        return null;
+    }
     
-    public Object call_function(ECMAScriptParser.FunctionDeclarationContext ctx,
+    public Object call_function(
+            ECMAScriptParser.FunctionDeclarationContext ctx,
             ECMAScriptParser.ArgumentListContext pList) {
-        //if (JavaMain.bDebug) out.println("call function");
+        
         Function_Call pFun=new Function_Call();
         pFun.pList=pList;
         pFun.Init(ctx,this);
         pFun.visitChildren(ctx);
-        return pFun.pReturn;
+        return pFun.pData.pReturn;
+    }
+    
+    
+    public Function_Data call_function_return_data(
+            ECMAScriptParser.FunctionDeclarationContext ctx,
+            ECMAScriptParser.ArgumentListContext pList) {
+        
+        Function_Call pFun=new Function_Call();
+        pFun.pList=pList;
+        pFun.Init(ctx,this);
+        FunctionBodyContext pBody=ctx.functionBody();
+        pFun.visitFunctionBody(pBody);
+        //pFun.visitChildren(ctx);
+        return pFun.pData;
     }
     
     public Object call_function(ECMAScriptParser.FunctionDeclarationContext ctx,
@@ -544,7 +619,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         pFun.pList2=pList;
         pFun.Init2(ctx,this);
         pFun.visitChildren(ctx);
-        return pFun.pReturn;
+        return pFun.pData.pReturn;
     }
     
     public Object call_function2(ECMAScriptParser.FunctionExpressionContext ctx,
@@ -720,7 +795,12 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext p1=ctx.singleExpression();
         ECMAScriptParser.ArgumentsContext p2= ctx.arguments();
         ECMAScriptParser.ArgumentListContext pList=p2.argumentList();
-        Object pObj=this.visitArgumentList(pList);
+        Object pObj=null;//this.visitArgumentList(pList);
+        if (pList!=null){
+            pObj=this.visitArgumentList(pList);
+        }else{
+            out.println("null");
+        }
         //String value=pList.getText();
         
         String function=p1.getText();
@@ -743,10 +823,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             out.println(ObjectName);
         }
         
-        if (JavaMain.bDebug){
-            out.println(pExpression.getClass().getName());
-        }
-        
         Object pResult;
         switch(pExpression.getClass().getName()){
             case "antlr_js.ECMAScriptParser$MemberIndexExpressionContext":
@@ -756,6 +832,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 pResult=this.visitIdentifierExpression((IdentifierExpressionContext) pExpression);
                 break;
             default:
+                if (JavaMain.bDebug){
+                    out.println(pExpression.getClass().getName());
+                }
                 pResult=visitChildren(pExpression);
                 break;
         }
@@ -799,6 +878,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                                 out.println(pResult.getClass().getName());
                             }  
                     }
+                case "Tools.Function_Data":
+                    Object pObj_Property=((Function_Data)pResult).pMap.get(strProperty);
+                    return pObj_Property;
                 default:
                     if (JavaMain.bDebug){
                         out.println(pResult.getClass().getName());

@@ -334,7 +334,8 @@ public class Function_SYS {
                             ArrayList pList=new ArrayList();
                             pList.add(o1);
                             pList.add(o2);
-                            return ((Double)pParent.call_function2(pFun5,pList)).intValue();
+                            int tmp= ((Double)pParent.call_function2(pFun5,pList)).intValue();
+                            return tmp;
                         }
                     };
                     ArrayList pList3=(ArrayList)pObj2;
@@ -421,11 +422,11 @@ public class Function_SYS {
             case "sleep":
                 pObj=pParent.get_var(value);
                 if (pObj!=null){
-                    value=(String) pObj;
+                    value=(Double) pObj;
                 }
                 {
                     try {
-                        Thread.sleep(Integer.parseInt((String)value)*1000);
+                        Thread.sleep(((Double)value).intValue()*1000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Function_SYS.class.getName()).log(Level.SEVERE, null, ex);
                     }
