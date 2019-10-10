@@ -82,7 +82,6 @@ public class Function_SYS {
             Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
-        Object pObj;
         switch(function){
             case "read_begin":
                 {
@@ -94,19 +93,19 @@ public class Function_SYS {
                     return null;
                 }
             case "read_line":
-                {
-                    ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
-                    String key=(String) pParent.parse_single_expression(pKey);
-                    
-                    return JavaMain.pFile.read_line(pParent,key);
-                }
             case "close":
-                {
-                    ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
-                    String key=(String) pParent.parse_single_expression(pKey);
-                    
-                    JavaMain.pFile.close(pParent,key);
-                    return null;
+            case "dir_init":
+                ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
+                String key=(String) pParent.parse_single_expression(pKey);
+                switch(function){
+                    case "read_line":
+                        return JavaMain.pFile.read_line(pParent,key);
+                    case "close":
+                        JavaMain.pFile.close(pParent,key);
+                        return null;
+                    case "dir_init":
+                        JavaMain.pFile.dir_init(key);
+                        return null;
                 }
             default:
                 out.println("没有这个函数:s_out."+function+"!");
