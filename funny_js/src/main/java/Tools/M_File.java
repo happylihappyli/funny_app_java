@@ -77,7 +77,9 @@ public class M_File {
         C_File pFile=(C_File) pParent.pData.pMap.get(key);
         String strLine=S_file.main.read_line(pFile);
         if (strLine==null){
-            out.println("stop");
+            if (JavaMain.bDebug){
+                out.println("read_line==null");
+            }
         }
         return strLine;
     }

@@ -47,7 +47,7 @@ function read(strFile,index){
     }*/
     
     var sum=items2.reduce(getSum,0);
-    s_out.println("sum="+sum+"; count="+count);
+    //s_out.println("sum="+sum+"; count="+count);
     
     fangcha=sum/count;
 
@@ -61,13 +61,13 @@ var strSplit=query.split(",");
 
 var line=avg+","+fangcha+",";
 
-s_out.println("strSplit.length=");
-s_out.println(strSplit.length);
+//s_out.println("strSplit.length=");
+//s_out.println(strSplit.length);
 
 for(var i=0;i<strSplit.length;i++){
     var index=Math.round((pArray.length-1)*parseFloat(strSplit[i]));
     var Score=pArray[index];
-    s_out.println(i+":"+Score);
+    //s_out.println(i+":"+Score);
     line+=Score+",";
 }
 s_out.println(line);

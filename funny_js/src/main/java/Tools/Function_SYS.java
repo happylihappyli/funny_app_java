@@ -216,15 +216,12 @@ public class Function_SYS {
                         pParent.put_var("reduce_sum", reduce_sum);
                         
                         double mReturn = (Double) pParent.call_function(pFun1, pList1);
-                        //out.println(reduce_sum+"="+mReturn);
                         return mReturn;
                     };
 
                     ArrayList pList4=(ArrayList)pObj2;
                     Object pResult3=pList4.stream().reduce(p2_result, pFun2);
                     
-                    Object pObj=pParent.get_var("reduce_sum");
-                    out.println(pObj+"");
                     return pResult3;
                 }
             case "antlr_js.ECMAScriptParser$FunctionExpressionContext":
@@ -249,7 +246,9 @@ public class Function_SYS {
                     return pResult;
                 }
             default:
-                out.println("error");
+                if (JavaMain.bDebug){
+                    out.println("error");
+                }
                 return null;
         }
     }
@@ -295,11 +294,6 @@ public class Function_SYS {
                     ArrayList<Object> results = new ArrayList<>();
                     pList4.stream().map(pFun4).forEach(s -> results.add(s));
                     
-                    double sum=0;
-                    for (int i=0;i<results.size();i++){
-                        sum+=(Double)results.get(i);
-                    }
-                    out.println(sum+"");
                     return results;
                 }
             default:

@@ -149,9 +149,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         SingleExpressionContext p1=ctx.singleExpression(0);
         SingleExpressionContext p2=ctx.singleExpression(1);
         
-//        if ("line+=Score+\",\"".equals(ctx.getText())){
-//            out.println("stop");
-//        }
         String Name=p1.getText();
         Object pObj1=this.parse_single_expression(p1);
         Object pObj2=this.parse_single_expression(p2);
@@ -200,7 +197,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         if ("null".equals(value)){
             return null;
         }
-        //if (JavaMain.bDebug) out.println(value);
         return Double.parseDouble(value);// value;
     }
     @Override
@@ -276,7 +272,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     public Object get_var(Object pObj){
         if (pObj==null){
-            //out.println("stop");
             return null;
         }
         switch (pObj.getClass().getName()){
@@ -372,9 +367,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     @Override
     public Object visitExpressionSequence(ECMAScriptParser.ExpressionSequenceContext ctx) {
-//        if ("strSplit.length".equals(ctx.getText())){
-//            out.println("stop");
-//        }
+
         SingleExpressionContext pExpression=ctx.singleExpression(0);
         
         switch(pExpression.getClass().getName()){
@@ -512,7 +505,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     @Override
     public Object visitFunctionBody(ECMAScriptParser.FunctionBodyContext ctx) {
-        out.print("aa");
+        //out.print("visitFunctionBody");
 
         return visitChildren(ctx);
     }
@@ -535,10 +528,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     @Override
     public Object visitWhileStatement(ECMAScriptParser.WhileStatementContext ctx) {
-        //out.println(ctx.getText()); 
         ExpressionSequenceContext p1=ctx.expressionSequence();
         Object pObj=this.visitExpressionSequence(p1);
-        //out.println(pObj.toString());
         StatementContext p2=ctx.statement();
 
         
@@ -612,9 +603,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         return pFun.pData;
     }
     
-    public Object call_function(ECMAScriptParser.FunctionDeclarationContext ctx,
+    public Object call_function(
+            ECMAScriptParser.FunctionDeclarationContext ctx,
             ArrayList pList) {
-        //if (JavaMain.bDebug) out.println("call function");
         Function_Call pFun=new Function_Call();
         pFun.pList2=pList;
         pFun.Init2(ctx,this);
@@ -644,9 +635,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     public Object visitSourceElement(ECMAScriptParser.SourceElementContext ctx) {
         StatementContext p=ctx.statement();
         if (p!=null){
-//            if (JavaMain.bDebug){
-//                out.println(p.getText());
-//            }
+            if (JavaMain.bDebug){
+                out.println(p.getText());
+            }
         }
         Object pObj=visitChildren(ctx);
         return pObj;
@@ -656,9 +647,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     @Override
     public Object visitStatement(ECMAScriptParser.StatementContext ctx) {
         String value=ctx.getText();
-//        if (value.startsWith("sum+")){
-//            out.println("stop");
-//        }
         return visitChildren(ctx);
     }
     
@@ -815,13 +803,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         SingleExpressionContext pExpression=ctx.singleExpression();
         
         String strProperty=pName.getText();
-//        if (JavaMain.bDebug){
-//            out.println(strProperty);
-//        }
         String ObjectName=pExpression.getText();
-//        if (JavaMain.bDebug){
-//            out.println(ObjectName);
-//        }
         
         Object pResult;
         switch(pExpression.getClass().getName()){
@@ -915,9 +897,12 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                     case "java.lang.Double":
                         index=((Double)p2_result).intValue();
                         break;
+                    case "java.lang.Long":
+                        index=((Long)p2_result).intValue();
+                        break;
                     default:
                         if (JavaMain.bDebug){
-                            out.println(p1_result.getClass().getName());
+                            out.println(p2_result.getClass().getName());
                         }
                         break;
                 }

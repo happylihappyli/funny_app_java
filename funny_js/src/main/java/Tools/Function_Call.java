@@ -32,10 +32,9 @@ public class Function_Call extends MyVisitor{
             return ;
         }
         for(int i=0;i<pList.singleExpression().size();i++){
-            ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);// .children.get(i);
-            TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
+            ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);
+            TerminalNode pName=pCtx.Identifier(i);
             String strName=pName.getText();
-            //out.println(pValue.getClass().getName());
             Object pObj=this.parse_single_expression(pValue);
             switch(pObj.getClass().getName()){
                 case "java.lang.String":
@@ -43,13 +42,13 @@ public class Function_Call extends MyVisitor{
                     if (strValue.startsWith("\"")){
                         strValue=strValue.substring(1,strValue.length()-1);
                     }
-                    if (JavaMain.bDebug) out.println(strName+"="+strValue);
-                    this.put_var(strName, strValue); //
-                    //pMap.put(strName,strValue);
+                    if (JavaMain.bDebug) {
+                        out.println(strName+"="+strValue);
+                    }
+                    this.put_var(strName, strValue); 
                     break;
                 default:
-                    this.put_var(strName, pObj); //
-                    //pMap.put(strName,pObj);
+                    this.put_var(strName, pObj);
                     break;
             }
         }
@@ -65,10 +64,8 @@ public class Function_Call extends MyVisitor{
         }
         ECMAScriptParser.FormalParameterListContext pCtx=ctx.formalParameterList();
         for(int i=0;i<pList2.size();i++){
-            //ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);// .children.get(i);
             TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
             String strName=pName.getText();
-            //out.println(pValue.getClass().getName());
             Object pObj=pList2.get(i);
             switch(pObj.getClass().getName()){
                 case "java.lang.String":
@@ -76,13 +73,13 @@ public class Function_Call extends MyVisitor{
                     if (strValue.startsWith("\"")){
                         strValue=strValue.substring(1,strValue.length()-1);
                     }
-                    if (JavaMain.bDebug) out.println(strName+"="+strValue);
-                    this.put_var(strName, strValue); //
-                    //pMap.put(strName,strValue);
+                    if (JavaMain.bDebug){
+                        out.println(strName+"="+strValue);
+                    }
+                    this.put_var(strName, strValue);
                     break;
                 default:
-                    this.put_var(strName, pObj); //
-                    //pMap.put(strName,pObj);
+                    this.put_var(strName, pObj);
                     break;
             }
         }

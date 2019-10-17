@@ -30,18 +30,18 @@ public class Function_Call2 extends MyVisitor{
         }
         ECMAScriptParser.FormalParameterListContext pCtx=ctx.formalParameterList();
         for(int i=0;i<pList.size();i++){
-            Object pObj=pList.get(i);// .children.get(i);
-            TerminalNode pName=pCtx.Identifier(i);// .children.get(i);
+            Object pObj=pList.get(i);
+            TerminalNode pName=pCtx.Identifier(i);
             String strName=pName.getText();
-            //out.println(pObj.getClass().getName());
-            //Object pObj=this.parse_single_expression(pValue);
             switch(pObj.getClass().getName()){
                 case "java.lang.String":
                     String strValue=(String)pObj;
                     if (strValue.startsWith("\"")){
                         strValue=strValue.substring(1,strValue.length()-1);
                     }
-                    if (JavaMain.bDebug) out.println(strName+"="+strValue);
+                    if (JavaMain.bDebug){
+                        out.println(strName+"="+strValue);
+                    }
                     this.put_var(strName, strValue); //pMap.put(strName,strValue);
                     break;
                 default:
