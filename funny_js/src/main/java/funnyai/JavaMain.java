@@ -19,8 +19,6 @@ public class JavaMain {
     
     public static void main(String[] args) {
         JavaMain.sys_args=args;
-        //bDebug=false;
-        
         
         String strFile=args[0];
         if (args.length>1){

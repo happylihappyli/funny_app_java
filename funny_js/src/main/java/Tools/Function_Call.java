@@ -35,7 +35,7 @@ public class Function_Call extends MyVisitor{
             ECMAScriptParser.SingleExpressionContext pValue=pList.singleExpression(i);
             TerminalNode pName=pCtx.Identifier(i);
             String strName=pName.getText();
-            Object pObj=this.parse_single_expression(pValue);
+            Object pObj=this.parse_single_expression_value(pValue);
             if (pObj==null){
                 out.println("error null"+pValue.getText());
             }

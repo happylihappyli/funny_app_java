@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath funnyai.JavaMain E:\\CloudStation\\Robot5\\GitHub\\funny_app_java\\funny_js\\js\\min_mid_max.js 0 E:\Test\step5.txt 25 "0,0.25,0.5,0.75,1"</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath funnyai.JavaMain E:\\Test\\main.js 0 1042|0|0.0|0.0|shanghai;weather;notpublic__</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath funnyai.JavaMain E:\\CloudStation\\Robot5\\GitHub\\funny_app_java\\funny_js\\js\\min_mid_max.js 0 E:\Test\step5.txt 25 "0,0.25,0.5,0.75,1"</exec.args>
+                <exec.args>-classpath %classpath funnyai.JavaMain E:\\Test\\main.js 0 1042|0|0.0|0.0|shanghai;weather;notpublic__</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -39,7 +39,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath funnyai.JavaMain E:\\CloudStation\\Robot5\\GitHub\\funny_app_java\\funny_js\\js\\min_mid_max.js 0 E:\Test\step5.txt 25 "0,0.25,0.5,0.75,1"</exec.args>
+                <exec.args>-classpath %classpath funnyai.JavaMain E:\\Test\\main.js 0 1042|0|0.0|0.0|shanghai;weather;notpublic__</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>

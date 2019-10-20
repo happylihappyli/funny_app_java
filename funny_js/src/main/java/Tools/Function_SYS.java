@@ -1,6 +1,7 @@
 package Tools;
 
 import antlr_js.ECMAScriptParser;
+import com.funnyai.common.S_Command;
 import com.funnyai.io.S_file;
 import com.funnyai.net.Old.S_Net;
 import com.funnyai.string.Old.S_Strings;
@@ -29,15 +30,15 @@ public class Function_SYS {
             case "pow":
                 ECMAScriptParser.SingleExpressionContext left = pList.singleExpression(0);// .singleExpression(0));
                 ECMAScriptParser.SingleExpressionContext right = pList.singleExpression(1);
-                Double express1=(Double) pParent.parse_single_expression(left);
-                Double express2=(Double) pParent.parse_single_expression(right);
+                Double express1=(Double) pParent.parse_single_expression_value(left);
+                Double express2=(Double) pParent.parse_single_expression_value(right);
                 return Math.pow(express1, express2);
                 
             case "round":
                 ECMAScriptParser.SingleExpressionContext left1 = pList.singleExpression(0);
                 //ECMAScriptParser.SingleExpressionContext right1 = pList.singleExpression(1);
                 
-                Double express3=(Double) pParent.parse_single_expression(left1);
+                Double express3=(Double) pParent.parse_single_expression_value(left1);
                 return Math.round(express3);
             default:
                 out.println("没有这个函数:s_math."+function+"!");
@@ -51,7 +52,7 @@ public class Function_SYS {
             Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
-        //Object pObj;
+        //Object pParam;
         switch(function){
             case "println":
                 
@@ -89,8 +90,8 @@ public class Function_SYS {
                 {
                     ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);// .singleExpression(0));
                     ECMAScriptParser.SingleExpressionContext pFile = pList.singleExpression(1);
-                    String key=(String) pParent.parse_single_expression(pKey);
-                    String file=(String) pParent.parse_single_expression(pFile);
+                    String key=(String) pParent.parse_single_expression_value(pKey);
+                    String file=(String) pParent.parse_single_expression_value(pFile);
                     JavaMain.pFile.read_begin(pParent,key,file);
                     return null;
                 }
@@ -98,7 +99,7 @@ public class Function_SYS {
             case "close":
             case "dir_init":
                 ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
-                String key=(String) pParent.parse_single_expression(pKey);
+                String key=(String) pParent.parse_single_expression_value(pKey);
                 switch(function){
                     case "read_line":
                         return JavaMain.pFile.read_line(pParent,key);
@@ -197,7 +198,7 @@ public class Function_SYS {
         switch(p1.getClass().getName()){
             case "antlr_js.ECMAScriptParser$IdentifierExpressionContext":
                 
-                Object p2_result=pParent.parse_single_expression(p2);
+                Object p2_result=pParent.parse_single_expression_value(p2);
                 String name=(String)p1.getText();
                 ECMAScriptParser.FunctionDeclarationContext pFun1=
 (ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+name);// .pMap.get();
@@ -346,29 +347,47 @@ public class Function_SYS {
     
     
     public static Object default_call(
-            String ObjectName,
+            ECMAScriptParser.SingleExpressionContext pObj,
             String function,
             Object value,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         
-        Object pObj2=pParent.get_var(ObjectName);
+        //String ObjectName,
+        Object pObj2=pParent.parse_single_expression_value(pObj);
+        //Object pObj2=pParent.get_var(ObjectName);
         if (pObj2!=null){
             switch(pObj2.getClass().getName()){
                 case "java.util.ArrayList":
                     return Array_call(pParent,function,value,pObj2,pList);
                 case "java.lang.String":
                     switch(function){
+                        case "startsWith":
+                        {
+                            String strLine=(String)pObj2;
+                            String value2=pList.getText();
+                            value2=(String)pParent.get_var(value2);
+                            return strLine.startsWith(value2);
+                        }
+                        case "endsWith":
+                        {
+                            String strLine=(String)pObj2;
+                            String value2=pList.getText();
+                            value2=(String)pParent.get_var(value2);
+                            return strLine.endsWith(value2);
+                        }
                         case "split":
+                        {
                             String strLine=(String)pObj2;
                             String value2=pList.getText();
                             value2=(String)pParent.get_var(value2);
                             return strLine.split(value2);
+                        }
                     }
                     break;
             }
         }else{
-            out.println("没有这个对象:"+ObjectName);
+            out.println("没有这个对象:"+pObj.getText());
         }
         return null;
     }
@@ -427,10 +446,22 @@ public class Function_SYS {
                     }
                 }
                 return value;
+            case "linux":
+                String Command=(String)value;
+                String strReturn="";
+                try {
+                    strReturn=S_Command.RunShell_Return(Command,5);
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                    strReturn=ex.toString();
+                    out.println(Command);
+                    out.println("error="+strReturn);
+                }
+                return strReturn;
             case "args":
                 {
                     ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
-                    int index=((Double) pParent.parse_single_expression(pKey)).intValue();
+                    int index=((Double) pParent.parse_single_expression_value(pKey)).intValue();
                     //Integer.parseInt
                     return JavaMain.sys_args[index+1];
                 }
@@ -442,45 +473,26 @@ public class Function_SYS {
     }
     
     
-    public static Object call(String function,
+    public static Object call(
+            ECMAScriptParser.SingleExpressionContext pObj,
+            String function,
             Object pValue,
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         
-        Object pObj=pValue;//pParent.get_var(pValue);
+        Object pParam=pValue;//pParent.get_var(pValue);
 
-        String[] strSplit=function.split("\\.");
-        if (strSplit.length>1){
-            switch(strSplit[0].toLowerCase()){
-                case "s_math":
-                    return math_call(strSplit[1],pObj,pParent,pList);
-                case "s_out":
-                    return out_call(strSplit[1],pObj,pParent,pList);
-                case "s_file":
-                    return file_call(strSplit[1],pObj,pParent,pList);
-                case "s_net":
-                    return net_call(strSplit[1],pObj,pParent,pList);
-                case "s_string":
-                    return string_call(strSplit[1],pObj,pParent,pList);
-                case "s_sys":
-                    return sys_call(strSplit[1],pValue,pParent,pList);
-                case "s_json":
-                    return json_call(strSplit[1],pObj,pParent,pList);
-                case "math":
-                    return math_call(strSplit[1],pObj,pParent,pList);
-                default:
-                    return default_call(strSplit[0],strSplit[1],pObj,pParent,pList);
-            }
-        }else{
+        //String[] strSplit=function.split("\\.");
+        if (pObj==null){
             switch(function){
                 case "parseFloat":
                     ECMAScriptParser.SingleExpressionContext left = pList.singleExpression(0);
-                    pObj=pParent.parse_single_expression(left);
-                    return Double.parseDouble((String)pObj);
+                    pParam=pParent.parse_single_expression_value(left);
+                    return Double.parseDouble((String)pParam);
                 case "parseInt":
                     ECMAScriptParser.SingleExpressionContext left2 = pList.singleExpression(0);
-                    pObj=pParent.parse_single_expression(left2);
-                    return Integer.parseInt((String)pObj);
+                    pParam=pParent.parse_single_expression_value(left2);
+                    return Integer.parseInt((String)pParam);
                 default:
                     ECMAScriptParser.FunctionDeclarationContext pFun=
 (ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+function);
@@ -490,6 +502,28 @@ public class Function_SYS {
                         return pParent.call_function(pFun,pList);
                     }
                     break;
+            }
+        }else{
+            switch(pObj.getText()){
+                case "s_math":
+                    return math_call(function,pParam,pParent,pList);
+                case "s_out":
+                    return out_call(function,pParam,pParent,pList);
+                case "s_file":
+                    return file_call(function,pParam,pParent,pList);
+                case "s_net":
+                    return net_call(function,pParam,pParent,pList);
+                case "s_string":
+                    return string_call(function,pParam,pParent,pList);
+                case "s_sys":
+                    return sys_call(function,pValue,pParent,pList);
+                case "s_json":
+                    return json_call(function,pParam,pParent,pList);
+                case "math":
+                    return math_call(function,pParam,pParent,pList);
+                default:
+                    //String name=(String) pParent.parse_single_expression_name(pObj);
+                    return default_call(pObj,function,pParam,pParent,pList);
             }
         }
         

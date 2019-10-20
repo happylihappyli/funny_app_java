@@ -60,8 +60,47 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     public Object visitLiteral(ECMAScriptParser.LiteralContext ctx) {
         return ctx.getText();
     }
+    public Object parse_single_expression_name(SingleExpressionContext ctx){
+        
+        switch(ctx.getClass().getName()){
+            case "antlr_js.ECMAScriptParser$MultiplicativeExpressionContext":
+                return visitMultiplicativeExpression((ECMAScriptParser.MultiplicativeExpressionContext) ctx);
+                
+            case "antlr_js.ECMAScriptParser$ArgumentsExpressionContext":
+                Object pObj=visitArgumentsExpression((ECMAScriptParser.ArgumentsExpressionContext) ctx);
+                return pObj;
+            case "antlr_js.ECMAScriptParser$IdentifierExpressionContext":
+                return ctx.getText();
+                //return visitIdentifierExpression((ECMAScriptParser.IdentifierExpressionContext) ctx);
+            case "antlr_js.ECMAScriptParser$AssignmentOperatorExpressionContext":
+                return this.visitAssignmentOperatorExpression((AssignmentOperatorExpressionContext) ctx);
+            case "antlr_js.ECMAScriptParser$EqualityExpressionContext":
+                return visitEqualityExpression((EqualityExpressionContext)ctx);
+            case "antlr_js.ECMAScriptParser$LiteralExpressionContext":
+                return this.visitLiteralExpression((LiteralExpressionContext) ctx);
+            case "antlr_js.ECMAScriptParser$AssignmentExpressionContext":
+                return visitArgumentsExpression((ECMAScriptParser.ArgumentsExpressionContext)ctx);
+            
+            case "antlr_js.ECMAScriptParser$AdditiveExpressionContext":
+                AdditiveExpressionContext p=(AdditiveExpressionContext)ctx;
+                return visitAdditiveExpression(p);
+            case "antlr_js.ECMAScriptParser$MemberDotExpressionContext":
+                return this.visitMemberDotExpression((MemberDotExpressionContext) ctx);
+            case "antlr_js.ECMAScriptParser$MemberIndexExpressionContext":
+                return this.visitMemberIndexExpression((MemberIndexExpressionContext) ctx);
+            case "antlr_js.ECMAScriptParser$ParenthesizedExpressionContext":
+                return this.visitParenthesizedExpression((ParenthesizedExpressionContext) ctx);
+            
+            default:
+                if (JavaMain.bDebug){
+                    out.println(ctx.getClass().getName());
+                }
+                return visitChildren(ctx);
+        }
+    }
     
-    public Object parse_single_expression(SingleExpressionContext ctx){
+    
+    public Object parse_single_expression_value(SingleExpressionContext ctx){
         
         switch(ctx.getClass().getName()){
             case "antlr_js.ECMAScriptParser$MultiplicativeExpressionContext":
@@ -150,8 +189,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         SingleExpressionContext p2=ctx.singleExpression(1);
         
         String Name=p1.getText();
-        Object pObj1=this.parse_single_expression(p1);
-        Object pObj2=this.parse_single_expression(p2);
+        Object pObj1=this.parse_single_expression_value(p1);
+        Object pObj2=this.parse_single_expression_value(p2);
         
         Double value1=0.0;
         Double value2=0.0;
@@ -222,8 +261,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         SingleExpressionContext pLeft= ctx.singleExpression(0);
         SingleExpressionContext pRight= ctx.singleExpression(1);
         
-        Object express1=parse_single_expression(pLeft);
-        Object express2=parse_single_expression(pRight);
+        Object express1=parse_single_expression_value(pLeft);
+        Object express2=parse_single_expression_value(pRight);
         
         switch(p.getText()){
             case  "==":
@@ -301,7 +340,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             case "java.lang.String":
                 String key=(String)pObj;
                 if (key.startsWith("\"")){
-                    return key.substring(1,key.length()-1);
+                    key=key.substring(1,key.length()-1);
+                    key=key.replace("\\\\", "\\");
+                    return key;
                 }
                 
                 if (pData.pMap.containsKey(key)){
@@ -316,7 +357,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                         return pParent.pData.pMap.get(key);
                     }
                 }
-                //return key;
             default:
                 break;
         }
@@ -360,8 +400,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     public Object visitLogicalAndExpression(ECMAScriptParser.LogicalAndExpressionContext ctx) {
         SingleExpressionContext pLeft= ctx.singleExpression(0);
         SingleExpressionContext pRight= ctx.singleExpression(1);
-        boolean bLeft=(boolean) parse_single_expression(pLeft);
-        boolean bRight=(boolean) parse_single_expression(pRight);
+        boolean bLeft=(boolean) parse_single_expression_value(pLeft);
+        boolean bRight=(boolean) parse_single_expression_value(pRight);
         return bLeft && bRight;
     }
     
@@ -370,8 +410,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     public Object visitLogicalOrExpression(ECMAScriptParser.LogicalOrExpressionContext ctx) {
         SingleExpressionContext pLeft= ctx.singleExpression(0);
         SingleExpressionContext pRight= ctx.singleExpression(1);
-        boolean bLeft=(boolean) parse_single_expression(pLeft);
-        boolean bRight=(boolean) parse_single_expression(pRight);
+        boolean bLeft=(boolean) parse_single_expression_value(pLeft);
+        boolean bRight=(boolean) parse_single_expression_value(pRight);
         return bLeft || bRight;
     }
     
@@ -451,8 +491,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     public Object visitRelationalExpression(ECMAScriptParser.RelationalExpressionContext ctx) {
         SingleExpressionContext p1=ctx.singleExpression(0);
         SingleExpressionContext p2=ctx.singleExpression(1);
-        Object express1=this.parse_single_expression(p1);
-        Object express2=this.parse_single_expression(p2);
+        Object express1=this.parse_single_expression_value(p1);
+        Object express2=this.parse_single_expression_value(p2);
         
         TerminalNode p3=(TerminalNode) ctx.getChild(1);
         
@@ -506,7 +546,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext pLeft = ctx.singleExpression(0);
         ECMAScriptParser.SingleExpressionContext pRight = ctx.singleExpression(1);
         String str1=pLeft.getText();
-        Object pObj=parse_single_expression(pRight);
+        Object pObj=parse_single_expression_value(pRight);
         if (str1.startsWith("this.")){
             str1=str1.split("\\.")[1];
         }else if (str1.contains(".")){
@@ -688,8 +728,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         TerminalNode p=(TerminalNode) ctx.children.get(1);
         String operate =p.getText();
         
-        Object express1=parse_single_expression(left);
-        Object express2=parse_single_expression(right);
+        Object express1=parse_single_expression_value(left);
+        Object express2=parse_single_expression_value(right);
         
         switch(operate){
             case "-":
@@ -765,8 +805,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext right = ctx.singleExpression(1);
         TerminalNode p=(TerminalNode) ctx.children.get(1);
         String operate =p.getText();
-        Object express1=parse_single_expression(left);
-        Object express2=parse_single_expression(right);
+        Object express1=parse_single_expression_value(left);
+        Object express2=parse_single_expression_value(right);
         switch(operate){
             case "/":
                 if (express1==null){
@@ -800,17 +840,38 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext p1=ctx.singleExpression();
         ECMAScriptParser.ArgumentsContext p2= ctx.arguments();
         ECMAScriptParser.ArgumentListContext pList=p2.argumentList();
-        Object pObj=null;//this.visitArgumentList(pList);
+        Object pParam=null;//this.visitArgumentList(pList);
         if (pList!=null){
-            pObj=this.visitArgumentList(pList);
+            pParam=this.visitArgumentList(pList);
         }else{
             out.println("null");
         }
         //String value=pList.getText();
-        
         String function=p1.getText();
-
-        return Function_SYS.call(function,pObj,this,pList);
+//        if (function.equals("strSplit[4].startsWith")){
+//            out.println("stop");
+//            out.println(p1.getClass().getName());
+//        }
+        SingleExpressionContext pObj=null;
+        switch(p1.getClass().getName()){
+            case "antlr_js.ECMAScriptParser$MemberDotExpressionContext":
+                MemberDotExpressionContext ctx2=(MemberDotExpressionContext) p1;
+                IdentifierNameContext pFun=ctx2.identifierName();
+                pObj=ctx2.singleExpression();
+                function=pFun.getText();
+                break;
+            default:
+                function=p1.getText();
+                if (function.contains(".")){
+                    out.println(p1.getClass().getName());
+                    out.println("error");
+//                    String[] strSplit=function.split("\\.");
+//                    pObj=strSplit[0];
+//                    function=strSplit[1];
+                }
+                break;
+        }
+        return Function_SYS.call(pObj,function,pParam,this,pList);
     }
     
     
@@ -937,13 +998,50 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     
     @Override
+    public Object visitSwitchStatement(ECMAScriptParser.SwitchStatementContext ctx) {
+        CaseBlockContext pCases=ctx.caseBlock();
+        ExpressionSequenceContext pCondition=ctx.expressionSequence();
+
+        Object pObj=this.visitExpressionSequence(pCondition);
+        switch (pObj.getClass().getName()){
+            case "java.lang.String":
+                boolean bRun=false;
+                String value=(String)pObj;
+                List<CaseClausesContext> pList=pCases.caseClauses();
+                for (int i=0;i<pList.size();i++){
+                    CaseClausesContext p=pList.get(i);
+                    List<CaseClauseContext> pList2=p.caseClause();
+                    for (int j=0;j<pList2.size();j++){
+                        CaseClauseContext p2=pList2.get(i);
+                        ExpressionSequenceContext pCondition2=p2.expressionSequence();
+                        Object pObj2=this.visitExpressionSequence(pCondition2);
+                        pObj2=this.get_var(pObj2);
+                        if (value.equals((String)pObj2)){
+                            StatementListContext p3=p2.statementList();
+                            this.visitStatementList(p3);
+                            bRun=true;
+                        }
+                    }
+                }
+                if (bRun==false){
+                    DefaultClauseContext p=pCases.defaultClause();
+                    StatementListContext p3=p.statementList();
+                    this.visitStatementList(p3);
+                }
+                break;
+        }
+        return null;//visitChildren(ctx);
+    }
+    
+    
+    @Override
     public Object visitMemberIndexExpression(
             ECMAScriptParser.MemberIndexExpressionContext ctx) {
         SingleExpressionContext p1=ctx.singleExpression();
         ExpressionSequenceContext p2=ctx.expressionSequence();
         
         
-        Object p1_result=this.parse_single_expression(p1);
+        Object p1_result=this.parse_single_expression_value(p1);
         Object p2_result=this.visitExpressionSequence(p2);
         
         switch(p1_result.getClass().getName()){
@@ -970,9 +1068,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                         }
                         break;
                 }
-//                if (index2==25){
-//                    out.println("error");
-//                }
+                if (index2==1){
+                    out.println("error");
+                }
                 return ((String[])p1_result)[index2];
             default:
                 if (JavaMain.bDebug){
