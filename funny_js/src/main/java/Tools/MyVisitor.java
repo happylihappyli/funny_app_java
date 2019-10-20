@@ -153,7 +153,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         Object pObj1=this.parse_single_expression(p1);
         Object pObj2=this.parse_single_expression(p2);
         
-        //Object value1=0;
+        Double value1=0.0;
+        Double value2=0.0;
         
         boolean bString=false;
         switch(pObj1.getClass().getName()){
@@ -162,21 +163,37 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 bString=true;
                 break;
             case "java.lang.Double":
-                //value1=((Double)pObj1);
+                value1=((Double)pObj1);
+                break;
+            case "java.lang.Integer":
+                value1=(Integer)pObj1+0.0;
                 break;
         }
+        
+        switch(pObj2.getClass().getName()){
+            case "java.lang.String":
+                bString=true;
+                break;
+            case "java.lang.Double":
+                value2=((Double)pObj2);
+                break;
+            case "java.lang.Integer":
+                value2=(Integer)pObj2+0.0;
+                break;
+        }
+        
         switch(pOperator.getText()){
             case "+=":
                 if (bString){
                     String sum_str=(String)pObj1+(String)pObj2;
                     this.put_var(Name,sum_str);
                 }else{
-                    Double sum1=(Double)pObj1+(Double)pObj2;
+                    Double sum1=value1+value2;
                     this.put_var(Name,sum1);
                 }
                 break;
             case "-=":
-                Double sum2=(Double)pObj1-(Double)pObj2;
+                Double sum2=value1-value2;
                 this.put_var(Name,sum2);
                 break;
             default:
@@ -758,7 +775,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 if (express2==null){
                     out.println("stop");
                 }
-                return ((Double)express1)/((Double)express2);
+                return double_from_object(express1)/double_from_object(express2);
             default:
                 if (express1==null){
                     out.println("stop");
@@ -766,7 +783,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 if (express2==null){
                     out.println("stop");
                 }
-                return ((Double)express1)* ((Double)express2);
+                return double_from_object(express1)*double_from_object(express2);
         }
     }
     
@@ -875,6 +892,50 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         return visitChildren(ctx);
     }
 
+    
+    public Double double_from_object(Object p2_result){
+        Double index=0.0;
+        switch(p2_result.getClass().getName()){
+            case "java.lang.String":
+                index=Double.valueOf((String)p2_result);
+                break;
+            case "java.lang.Double":
+                index=((Double)p2_result);
+                break;
+            case "java.lang.Long":
+                index=((Long)p2_result)+0.0;
+                break;
+            default:
+                if (JavaMain.bDebug){
+                    out.println(p2_result.getClass().getName());
+                }
+                break;
+        }
+        return index;
+    }
+    
+    public Integer int_from_object(Object p2_result){
+        int index=0;
+        switch(p2_result.getClass().getName()){
+            case "java.lang.String":
+                index=Integer.valueOf((String)p2_result);
+                break;
+            case "java.lang.Double":
+                index=((Double)p2_result).intValue();
+                break;
+            case "java.lang.Long":
+                index=((Long)p2_result).intValue();
+                break;
+            default:
+                if (JavaMain.bDebug){
+                    out.println(p2_result.getClass().getName());
+                }
+                break;
+        }
+        return index;
+    }
+    
+    
     @Override
     public Object visitMemberIndexExpression(
             ECMAScriptParser.MemberIndexExpressionContext ctx) {
@@ -888,25 +949,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         switch(p1_result.getClass().getName()){
             case "java.util.ArrayList":
                 ArrayList pArrayList=(ArrayList) p1_result;
-                Integer index=0;//this.get_var(p2.getText());
-                
-                switch(p2_result.getClass().getName()){
-                    case "java.lang.String":
-                        index=Integer.valueOf((String)p2_result);
-                        break;
-                    case "java.lang.Double":
-                        index=((Double)p2_result).intValue();
-                        break;
-                    case "java.lang.Long":
-                        index=((Long)p2_result).intValue();
-                        break;
-                    default:
-                        if (JavaMain.bDebug){
-                            out.println(p2_result.getClass().getName());
-                        }
-                        break;
-                }
-                
+                Integer index=this.int_from_object(p2_result);
                 return pArrayList.get(index);//((Long)index).intValue());
             case "org.json.JSONArray":
                 org.json.JSONArray pArray=(org.json.JSONArray) p1_result;
@@ -927,6 +970,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                         }
                         break;
                 }
+//                if (index2==25){
+//                    out.println("error");
+//                }
                 return ((String[])p1_result)[index2];
             default:
                 if (JavaMain.bDebug){

@@ -35,6 +35,8 @@ public class Function_SYS {
                 
             case "round":
                 ECMAScriptParser.SingleExpressionContext left1 = pList.singleExpression(0);
+                //ECMAScriptParser.SingleExpressionContext right1 = pList.singleExpression(1);
+                
                 Double express3=(Double) pParent.parse_single_expression(left1);
                 return Math.round(express3);
             default:
@@ -475,6 +477,10 @@ public class Function_SYS {
                     ECMAScriptParser.SingleExpressionContext left = pList.singleExpression(0);
                     pObj=pParent.parse_single_expression(left);
                     return Double.parseDouble((String)pObj);
+                case "parseInt":
+                    ECMAScriptParser.SingleExpressionContext left2 = pList.singleExpression(0);
+                    pObj=pParent.parse_single_expression(left2);
+                    return Integer.parseInt((String)pObj);
                 default:
                     ECMAScriptParser.FunctionDeclarationContext pFun=
 (ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+function);

@@ -36,6 +36,9 @@ public class Function_Call extends MyVisitor{
             TerminalNode pName=pCtx.Identifier(i);
             String strName=pName.getText();
             Object pObj=this.parse_single_expression(pValue);
+            if (pObj==null){
+                out.println("error null"+pValue.getText());
+            }
             switch(pObj.getClass().getName()){
                 case "java.lang.String":
                     String strValue=(String)pObj;
