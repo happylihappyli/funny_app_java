@@ -1068,9 +1068,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                         }
                         break;
                 }
-                if (index2==1){
-                    out.println("error");
-                }
+//                if (index2==1){
+//                    out.println("error");
+//                }
                 return ((String[])p1_result)[index2];
             default:
                 if (JavaMain.bDebug){
