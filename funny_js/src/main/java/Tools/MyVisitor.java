@@ -266,7 +266,14 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         
         switch(p.getText()){
             case  "==":
-                return (express1 == express2);
+                switch(express1.getClass().getName()){
+                    case "java.lang.Double":
+                    case "java.lang.Integer":
+                    case "java.lang.Long":
+                        return (express1 == express2);
+                    case "java.lang.String":
+                        return ((String)express1).equals(express2);
+                }
             case "!=":
             case "!==":
                 if ("null".equals(express2)){
@@ -758,8 +765,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                     case "java.lang.Double":
                         switch(express2.getClass().getName()){
                             case "java.lang.String":
-                                Object pObj2=this.get_var(express2);
-                                return express1+string_process((String)pObj2);
+                                return express1+string_process((String)express2);
                             case "java.lang.Double":
                                 return (Double)express1+(Double)express2;
                             default:

@@ -519,6 +519,7 @@ public class Function_SYS {
                     return sys_call(function,pValue,pParent,pList);
                 case "s_json":
                     return json_call(function,pParam,pParent,pList);
+                case "Math":
                 case "math":
                     return math_call(function,pParam,pParent,pList);
                 default:
