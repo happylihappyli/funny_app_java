@@ -86,29 +86,44 @@ public class Function_SYS {
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         switch(function){
-            case "read_begin":
+            case "write_begin":
                 {
                     ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);// .singleExpression(0));
                     ECMAScriptParser.SingleExpressionContext pFile = pList.singleExpression(1);
                     String key=(String) pParent.parse_single_expression_value(pKey);
-                    String file=(String) pParent.parse_single_expression_value(pFile);
-                    JavaMain.pFile.read_begin(pParent,key,file);
-                    return null;
+                    String line=(String) pParent.parse_single_expression_value(pFile);
+                    switch(function){
+                        case "write_begin":
+                            JavaMain.pFile.write_begin(pParent,key,line);
+                            return null;
+                        case "write_line":
+                            JavaMain.pFile.write_line(pParent,key,line);
+                            return null;
+                        case "read_begin":
+                            JavaMain.pFile.read_begin(pParent,key,line);
+                            return null;
+                    }
                 }
             case "read_line":
             case "close":
             case "dir_init":
-                ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
-                String key=(String) pParent.parse_single_expression_value(pKey);
-                switch(function){
-                    case "read_line":
-                        return JavaMain.pFile.read_line(pParent,key);
-                    case "close":
-                        JavaMain.pFile.close(pParent,key);
-                        return null;
-                    case "dir_init":
-                        JavaMain.pFile.dir_init(key);
-                        return null;
+            case "write_end":
+                {
+                    ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);
+                    String key=(String) pParent.parse_single_expression_value(pKey);
+                    switch(function){
+                        case "read_line":
+                            return JavaMain.pFile.read_line(pParent,key);
+                        case "close":
+                            JavaMain.pFile.close(pParent,key);
+                            return null;
+                        case "dir_init":
+                            JavaMain.pFile.dir_init(key);
+                            return null;
+                        case "write_end":
+                            JavaMain.pFile.write_end(pParent,key);
+                            return null;
+                    }
                 }
             default:
                 out.println("没有这个函数:s_out."+function+"!");

@@ -64,17 +64,44 @@ public class M_File {
         return S_File_Text.Write(strFile1,Content);
     }
     
+    
+    public void write_begin(MyVisitor pParent,
+            String key,String strFile1){
+        
+        if (strFile1.startsWith("@")){
+            strFile1=strFile1.replace("@", JavaMain.strPath);
+        }
+        pParent.put_var(key,S_file.main.Write_Begin(strFile1,false,"utf-8"));
+    }
+    
+    
+    public void write_line(MyVisitor pParent,
+            String key,String strLine){
+        
+        C_File pFile=(C_File) pParent.get_var(key);
+        S_file.main.Write_Line(pFile,strLine);
+    }
+    
+    
+    public void write_end(MyVisitor pParent,
+            String key){
+        
+        C_File pFile=(C_File) pParent.get_var(key);
+        S_file.main.Write_End(pFile);
+    }
+    
+    
     public void read_begin(MyVisitor pParent,
             String key,String strFile1){
         
         if (strFile1.startsWith("@")){
             strFile1=strFile1.replace("@", JavaMain.strPath);
         }
-        pParent.pData.pMap.put(key,S_file.main.Read_Begin(strFile1,"utf-8"));
+        pParent.put_var(key,S_file.main.Read_Begin(strFile1,"utf-8"));
     }
     
     public String read_line(MyVisitor pParent,String key){
-        C_File pFile=(C_File) pParent.pData.pMap.get(key);
+        C_File pFile=(C_File) pParent.get_var(key);
         String strLine=S_file.main.read_line(pFile);
         if (strLine==null){
             if (JavaMain.bDebug){
@@ -85,7 +112,7 @@ public class M_File {
     }
     
     public void close(MyVisitor pParent,String key){
-        C_File pFile=(C_File) pParent.pData.pMap.get(key);
+        C_File pFile=(C_File) pParent.get_var(key);
         pFile.Close();
     }
     

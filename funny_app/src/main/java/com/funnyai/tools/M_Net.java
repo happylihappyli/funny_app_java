@@ -20,7 +20,7 @@ public class M_Net {
     public void send_msg(
             String event_type,String stype,
             String from,String to,String msg){
-        S_Net.SI_Send(event_type,stype,from,to,msg);
+        S_Net.SI_Send2(event_type,stype,from,to,msg);
     }
     
     public void upload(String host,Integer iPort,String username,String password,
