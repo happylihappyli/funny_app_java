@@ -86,6 +86,8 @@ public class Function_SYS {
             MyVisitor pParent,
             ECMAScriptParser.ArgumentListContext pList){
         switch(function){
+            case "read_begin":
+            case "write_line":
             case "write_begin":
                 {
                     ECMAScriptParser.SingleExpressionContext pKey = pList.singleExpression(0);// .singleExpression(0));
