@@ -126,6 +126,25 @@
             </plugin>
             
             
+            <plugin>
+                <groupId>com.funnyai</groupId>
+                <artifactId>funny-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <configuration>
+                    <prefix>---</prefix>
+                    <upload>E:\happyli\Jar\funny_app\funny_app.jar</upload>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>buildinfo</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>buildinfo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
 

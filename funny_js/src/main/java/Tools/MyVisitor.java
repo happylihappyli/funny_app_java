@@ -1018,10 +1018,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                     CaseClausesContext p=pList.get(i);
                     List<CaseClauseContext> pList2=p.caseClause();
                     for (int j=0;j<pList2.size();j++){
-                        CaseClauseContext p2=pList2.get(i);
+                        CaseClauseContext p2=pList2.get(j);
                         ExpressionSequenceContext pCondition2=p2.expressionSequence();
                         Object pObj2=this.visitExpressionSequence(pCondition2);
-                        //pObj2=this.get_var(pObj2);
                         if (value.equals((String)pObj2)){
                             StatementListContext p3=p2.statementList();
                             this.visitStatementList(p3);

@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath funnyai.JavaMain E:\Test\merge_bad_good.js 1 E:\Test\train_good.txt E:\Test\train_bad.txt E:\Test\train.txt</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath funnyai.JavaMain E:\Test\test.js 0</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath funnyai.JavaMain E:\Test\merge_bad_good.js 1 E:\Test\train_good.txt E:\Test\train_bad.txt E:\Test\train.txt</exec.args>
+                <exec.args>-classpath %classpath funnyai.JavaMain E:\Test\test.js 0</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -39,7 +39,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath funnyai.JavaMain E:\Test\merge_bad_good.js 1 E:\Test\train_good.txt E:\Test\train_bad.txt E:\Test\train.txt</exec.args>
+                <exec.args>-classpath %classpath funnyai.JavaMain E:\Test\test.js 0</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
