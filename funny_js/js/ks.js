@@ -74,6 +74,8 @@ for (var i=0;i<pArray.length;i++){
     }
 }
 s_out.println(delta+"");
+
+s_sys.sleep(10);
 s_sys.exit(0);
 
 
