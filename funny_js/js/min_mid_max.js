@@ -54,6 +54,8 @@ function round_2(value){
 }
 
 var k_count=parseInt(s_sys.args(2));
+//s_out.println(k_count);
+
 for(var k=0;k<k_count;k++){
     var pArray=read(s_sys.args(1),k);
     var query=s_sys.args(3);
@@ -70,5 +72,6 @@ for(var k=0;k<k_count;k++){
     s_out.println(line);
 }
 
+s_sys.sleep(10);
 s_sys.exit(0);
 

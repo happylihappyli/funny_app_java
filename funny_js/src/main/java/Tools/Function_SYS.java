@@ -28,18 +28,25 @@ public class Function_SYS {
             ECMAScriptParser.ArgumentListContext pList){
         switch(function){
             case "pow":
-                ECMAScriptParser.SingleExpressionContext left = pList.singleExpression(0);// .singleExpression(0));
-                ECMAScriptParser.SingleExpressionContext right = pList.singleExpression(1);
-                Double express1=(Double) pParent.parse_single_expression_value(left);
-                Double express2=(Double) pParent.parse_single_expression_value(right);
-                return Math.pow(express1, express2);
-                
+                {
+                    ECMAScriptParser.SingleExpressionContext left = pList.singleExpression(0);// .singleExpression(0));
+                    ECMAScriptParser.SingleExpressionContext right = pList.singleExpression(1);
+                    Double express1=(Double) pParent.parse_single_expression_value(left);
+                    Double express2=(Double) pParent.parse_single_expression_value(right);
+                    return Math.pow(express1, express2);
+                }
             case "round":
-                ECMAScriptParser.SingleExpressionContext left1 = pList.singleExpression(0);
-                //ECMAScriptParser.SingleExpressionContext right1 = pList.singleExpression(1);
-                
-                Double express3=(Double) pParent.parse_single_expression_value(left1);
-                return Math.round(express3);
+                {
+                    ECMAScriptParser.SingleExpressionContext left1 = pList.singleExpression(0);
+                    Double express3=(Double) pParent.parse_single_expression_value(left1);
+                    return Math.round(express3);
+                }
+            case "sqrt":
+                {
+                    ECMAScriptParser.SingleExpressionContext left1 = pList.singleExpression(0);
+                    Double express3=(Double) pParent.parse_single_expression_value(left1);
+                    return Math.sqrt(express3);
+                }
             default:
                 out.println("没有这个函数:s_math."+function+"!");
                 break;
@@ -507,9 +514,22 @@ public class Function_SYS {
                     pParam=pParent.parse_single_expression_value(left);
                     return Double.parseDouble((String)pParam);
                 case "parseInt":
+                {
                     ECMAScriptParser.SingleExpressionContext left2 = pList.singleExpression(0);
                     pParam=pParent.parse_single_expression_value(left2);
                     return Integer.parseInt((String)pParam);
+                }
+                case "Array":
+                {
+                    ArrayList pList2=new ArrayList();
+                    ECMAScriptParser.SingleExpressionContext left2 = pList.singleExpression(0);
+                    pParam=pParent.parse_single_expression_value(left2);
+                    int count=pParent.double_from_object(pParam).intValue();
+                    for (int i=0;i<count;i++){
+                        pList2.add("");
+                    }
+                    return pList2;
+                }
                 default:
                     ECMAScriptParser.FunctionDeclarationContext pFun=
 (ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+function);
@@ -522,8 +542,6 @@ public class Function_SYS {
             }
         }else{
             switch(pObj.getText()){
-                case "s_math":
-                    return math_call(function,pParam,pParent,pList);
                 case "s_out":
                     return out_call(function,pParam,pParent,pList);
                 case "s_file":
@@ -538,6 +556,7 @@ public class Function_SYS {
                     return json_call(function,pParam,pParent,pList);
                 case "Math":
                 case "math":
+                case "s_math":
                     return math_call(function,pParam,pParent,pList);
                 default:
                     //String name=(String) pParent.parse_single_expression_name(pObj);

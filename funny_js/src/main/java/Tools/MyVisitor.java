@@ -99,7 +99,21 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         }
     }
     
-    
+    public void parse_single_expression_value_set(SingleExpressionContext ctx,Object pObj){
+        switch(ctx.getClass().getName()){
+            case "antlr_js.ECMAScriptParser$MemberIndexExpressionContext":
+                this.visitMemberIndexExpression_set((MemberIndexExpressionContext) ctx,pObj);
+                break;
+            case "antlr_js.ECMAScriptParser$IdentifierExpressionContext":
+                this.put_var(ctx.getText(), pObj);
+                break;
+            default:
+                if (JavaMain.bDebug){
+                    //out.println(ctx.getClass().getName());
+                }
+                this.put_var(ctx.getText(), pObj);
+        }
+    }
     public Object parse_single_expression_value(SingleExpressionContext ctx){
         
         switch(ctx.getClass().getName()){
@@ -175,11 +189,52 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
     
     @Override
     public Object visitForStatement(ECMAScriptParser.ForStatementContext ctx) {
-        TerminalNode p1=ctx.For();
-        StatementContext p2=ctx.statement();
-        List<ExpressionSequenceContext> pList=ctx.expressionSequence();
+        StatementContext pState=ctx.statement();
         
-        return visitChildren(ctx);
+        ExpressionSequenceContext p1=ctx.expressionSequence(0);
+        ExpressionSequenceContext pCondition=ctx.expressionSequence(1);
+        ExpressionSequenceContext p3=ctx.expressionSequence(2);
+        
+//        if (JavaMain.bDebug){
+//            out.println(pState.getText());
+//            out.println(p1.getText());
+//            out.println(pCondition.getText());
+//            out.println(p3.getText());
+//        }
+        
+        this.visitExpressionSequence(p1);
+        Object pObj2=this.visitExpressionSequence(pCondition);
+        
+        boolean iResult=false;
+        switch (pObj2.getClass().getName()){
+            case "java.lang.Boolean":
+                iResult=(boolean)pObj2;
+                break;
+            default:
+                if (JavaMain.bDebug){
+                    out.println(pObj2.getClass().getName());
+                }
+                break;
+        }
+        
+        while (iResult){
+            visitChildren(pState);
+            this.visitExpressionSequence(p3);
+            
+            pObj2=this.visitExpressionSequence(pCondition);
+            iResult=false;
+            switch (pObj2.getClass().getName()){
+                case "java.lang.Boolean":
+                    iResult=(boolean)pObj2;
+                    break;
+                default:
+                    if (JavaMain.bDebug){
+                        out.println(pObj2.getClass().getName());
+                    }
+                    break;
+            }
+        }
+        return null;
     }
     
     @Override
@@ -553,6 +608,12 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext pLeft = ctx.singleExpression(0);
         ECMAScriptParser.SingleExpressionContext pRight = ctx.singleExpression(1);
         String str1=pLeft.getText();
+        
+        //Object Name=parse_single_expression_value(pLeft);
+        
+//        if (str1.contains("[")){
+//            out.println(str1);
+//        }
         Object pObj=parse_single_expression_value(pRight);
         if (str1.startsWith("this.")){
             str1=str1.split("\\.")[1];
@@ -560,10 +621,15 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             String[] strSplit=str1.split("\\.");
             String Object_Name=strSplit[0];
             Function_Data pData2=(Function_Data) this.get_var(Object_Name);
-            this.put_var(pData2,strSplit[1], pObj);
-            return pObj;
+            //this.put_var(pData2,strSplit[1], pObj);
+            //return pObj;
         }
-        this.put_var(str1,pObj);
+        //this.put_var(str1,pObj);
+        
+//        if ("data[i]".equals(str1)){
+//            out.println(str1);
+//        }
+        parse_single_expression_value_set(pLeft,pObj);
         return pObj;
     }
     
@@ -700,7 +766,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         StatementContext p=ctx.statement();
         if (p!=null){
             if (JavaMain.bDebug){
-                out.println(p.getText());
+                //out.println(p.getText());
             }
         }
         Object pObj=visitChildren(ctx);
@@ -768,6 +834,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                                 return express1+string_process((String)express2);
                             case "java.lang.Double":
                                 return (Double)express1+(Double)express2;
+                            case "java.lang.Integer":
+                                return (Double)express1+(Integer)express2;
                             default:
                                 return (Double)express1+(Double)express2;
                         }
@@ -780,6 +848,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                             case "java.lang.Double":
                                 return string_process((String)express1)
                                         +(Double)express2;
+                            case "java.lang.Integer":
+                                return string_process((String)express1)
+                                        +(Integer)express2;
                             default:
                                 return string_process((String)express1)
                                         +(Double)express2;
@@ -815,12 +886,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         Object express2=parse_single_expression_value(right);
         switch(operate){
             case "/":
-                if (express1==null){
-                    out.println("stop");
-                }
-                if (express2==null){
-                    out.println("stop");
-                }
                 return double_from_object(express1)/double_from_object(express2);
             default:
                 if (express1==null){
@@ -961,16 +1026,19 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
 
     
     public Double double_from_object(Object p2_result){
-        Double index=0.0;
+        Double mValue=0.0;
         switch(p2_result.getClass().getName()){
             case "java.lang.String":
-                index=Double.valueOf((String)p2_result);
+                mValue=Double.valueOf((String)p2_result);
                 break;
             case "java.lang.Double":
-                index=((Double)p2_result);
+                mValue=((Double)p2_result);
                 break;
             case "java.lang.Long":
-                index=((Long)p2_result)+0.0;
+                mValue=((Long)p2_result)+0.0;
+                break;
+            case "java.lang.Integer":
+                mValue=((Integer)p2_result)+0.0;
                 break;
             default:
                 if (JavaMain.bDebug){
@@ -978,7 +1046,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 }
                 break;
         }
-        return index;
+        return mValue;
     }
     
     public Integer int_from_object(Object p2_result){
@@ -1035,9 +1103,52 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 }
                 break;
         }
-        return null;//visitChildren(ctx);
+        return null;
     }
     
+    public void visitMemberIndexExpression_set(
+            ECMAScriptParser.MemberIndexExpressionContext ctx,Object pObj) {
+        SingleExpressionContext p1=ctx.singleExpression();
+        ExpressionSequenceContext p2=ctx.expressionSequence();
+        
+        
+        Object p1_result=this.parse_single_expression_value(p1);
+        Object p2_result=this.visitExpressionSequence(p2);
+        
+        switch(p1_result.getClass().getName()){
+            case "java.util.ArrayList":
+                ArrayList pArrayList=(ArrayList) p1_result;
+                Integer index=this.int_from_object(p2_result);
+                while (pArrayList.size()<= index){
+                    pArrayList.add("");
+                }
+                pArrayList.set(index,pObj);
+                break;
+            case "[Ljava.lang.String;":
+                int index2=0;
+                switch(p2_result.getClass().getName()){
+                    case "java.lang.String":
+                        index2=Integer.valueOf((String)p2_result);
+                        break;
+                    case "java.lang.Double":
+                        index2=((Double)p2_result).intValue();
+                        break;
+                    default:
+                        if (JavaMain.bDebug){
+                            out.println(p1_result.getClass().getName());
+                        }
+                        break;
+                }
+                ((String[])p1_result)[index2]=(String)pObj;
+                break;
+            default:
+                if (JavaMain.bDebug){
+                    out.println(p1_result.getClass().getName());
+                }
+                visitChildren(ctx);
+                break;
+        }
+    }
     
     @Override
     public Object visitMemberIndexExpression(
@@ -1053,7 +1164,10 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             case "java.util.ArrayList":
                 ArrayList pArrayList=(ArrayList) p1_result;
                 Integer index=this.int_from_object(p2_result);
-                return pArrayList.get(index);//((Long)index).intValue());
+                while (pArrayList.size()<= index){
+                    pArrayList.add("");
+                }
+                return pArrayList.get(index);//((Long)mValue).intValue());
             case "org.json.JSONArray":
                 org.json.JSONArray pArray=(org.json.JSONArray) p1_result;
                 int index_jsonarray=Integer.parseInt(p2.getText());
