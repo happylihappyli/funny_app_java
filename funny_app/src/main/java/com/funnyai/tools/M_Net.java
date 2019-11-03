@@ -50,13 +50,6 @@ public class M_Net {
         M_SSH sshExecutor = new M_SSH(IP,user,password,file_pem,wait_count);
  
         String strReturn=sshExecutor.execute(strLine);
-//        while(sshExecutor.bReading){
-//            try {
-//                Thread.sleep(200);
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(M_SSH.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
         return strReturn;
     }
 }

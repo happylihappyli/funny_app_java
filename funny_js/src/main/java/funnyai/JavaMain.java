@@ -1,6 +1,7 @@
 package funnyai;
 
 import Tools.M_File;
+import Tools.M_Net;
 import Tools.MyVisitor;
 import antlr_js.ECMAScriptLexer;
 import antlr_js.ECMAScriptParser;
@@ -15,7 +16,10 @@ public class JavaMain {
     public static boolean bDebug=false;
     public static String strPath="";
     public static M_File pFile=new M_File();
+    public static M_Net pNet=new M_Net();
     public static String[] sys_args;
+    public static String account="";
+    public static String md5="";
     
     public static void main(String[] args) {
         JavaMain.sys_args=args;
