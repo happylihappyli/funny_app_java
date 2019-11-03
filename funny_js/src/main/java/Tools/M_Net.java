@@ -75,6 +75,7 @@ public class M_Net {
     
     public void tcp_connetc(String hosts,int port){
         pClient=new TCP_Client(hosts,port);
+        pClient.start();
     }
     
     
