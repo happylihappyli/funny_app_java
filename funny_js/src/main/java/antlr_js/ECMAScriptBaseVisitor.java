@@ -2,7 +2,9 @@ package antlr_js;
 // Generated from ECMAScript.g4 by ANTLR 4.7.1
 
 import static java.lang.System.out;
+import java.util.List;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
  * This class provides an empty implementation of {@link ECMAScriptVisitor},
@@ -61,13 +63,21 @@ public class ECMAScriptBaseVisitor<T> extends AbstractParseTreeVisitor<T> implem
     
     @Override
     public T visitVariableDeclarationList(ECMAScriptParser.VariableDeclarationListContext ctx) {
-
-        return visitChildren(ctx);
+        List<ECMAScriptParser.VariableDeclarationContext> pList=ctx.variableDeclaration();
+        for(int i=0;i<pList.size();i++){
+            ECMAScriptParser.VariableDeclarationContext pItem=pList.get(i);
+            this.visitVariableDeclaration(pItem);
+        }
+        return null;
     }
 
     
     @Override
     public T visitVariableDeclaration(ECMAScriptParser.VariableDeclarationContext ctx) {
+        TerminalNode pName=ctx.Identifier();
+        ECMAScriptParser.InitialiserContext pContext=ctx.initialiser();
+        pName.getText();
+        pContext.getText();
         return visitChildren(ctx);
     }
 

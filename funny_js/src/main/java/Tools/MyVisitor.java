@@ -27,8 +27,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         InitialiserContext pInit=ctx.initialiser();
         
         String varName=pNode1.getText();
-        String Value=pInit.getText();
+        pData.pMap.put(varName,"");//定义变量，需要在当前上下文声明一个新的
         
+        String Value=pInit.getText();
 
         Object pObj=visitChildren(pInit);
         if (pObj==null){
@@ -143,7 +144,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                 return this.visitMemberIndexExpression((MemberIndexExpressionContext) ctx);
             case "antlr_js.ECMAScriptParser$ParenthesizedExpressionContext":
                 return this.visitParenthesizedExpression((ParenthesizedExpressionContext) ctx);
-            
+            case "antlr_js.ECMAScriptParser$NewExpressionContext":
+                return this.visitNewExpression((NewExpressionContext) ctx);
             default:
                 if (JavaMain.bDebug){
                     out.println(ctx.getClass().getName());
@@ -609,11 +611,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext pRight = ctx.singleExpression(1);
         String str1=pLeft.getText();
         
-        //Object Name=parse_single_expression_value(pLeft);
-        
-//        if (str1.contains("[")){
-//            out.println(str1);
-//        }
         Object pObj=parse_single_expression_value(pRight);
         if (str1.startsWith("this.")){
             str1=str1.split("\\.")[1];
@@ -626,9 +623,6 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         }
         //this.put_var(str1,pObj);
         
-//        if ("data[i]".equals(str1)){
-//            out.println(str1);
-//        }
         parse_single_expression_value_set(pLeft,pObj);
         return pObj;
     }
@@ -670,6 +664,12 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         return null;
     }
     
+    
+    /**
+     * new xxx
+     * @param ctx
+     * @return 
+     */
     @Override
     public Object visitNewExpression(ECMAScriptParser.NewExpressionContext ctx) {
         ArgumentsContext pA=ctx.arguments();
@@ -694,16 +694,28 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                     out.println("null");
                 }
                 String function=p1.getText();
-
-                
-                ECMAScriptParser.FunctionDeclarationContext pFun=
-(ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+function);
-                if (pFun==null){
-                    out.println("no function:"+function);
-                }else{
-                    Function_Data pData=pParent.call_function_return_data(pFun,pList);
-                    return pData;
+                switch(function){
+                    case "Array":
+                        ArrayList pList2=new ArrayList();
+                        ECMAScriptParser.SingleExpressionContext left2 = pList.singleExpression(0);
+                        Object pParam=pParent.parse_single_expression_value(left2);
+                        int count=pParent.double_from_object(pParam).intValue();
+                        for (int i=0;i<count;i++){
+                            pList2.add("");
+                        }
+                        return pList2;
+                    default:
+                        ECMAScriptParser.FunctionDeclarationContext pFun=
+        (ECMAScriptParser.FunctionDeclarationContext)pParent.get_var("function:"+function);
+                        if (pFun==null){
+                            out.println("no function:"+function);
+                        }else{
+                            Function_Data pData=pParent.call_function_return_data(pFun,pList);
+                            return pData;
+                        }
+                        break;
                 }
+                
         }
         return null;
     }

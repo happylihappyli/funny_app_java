@@ -105,7 +105,7 @@ public class M_File {
         String strLine=S_file.main.read_line(pFile);
         if (strLine==null){
             if (JavaMain.bDebug){
-                out.println("read_line==null");
+                //out.println("read_line==null");
             }
         }
         return strLine;
