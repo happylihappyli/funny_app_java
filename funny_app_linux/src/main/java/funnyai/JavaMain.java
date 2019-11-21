@@ -16,7 +16,6 @@ import com.funnyai.tools.M_Net;
 import com.funnyai.tools.M_RSA;
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Object;
-import com.funnyai.io.C_File;
 import com.funnyai.tools.M_AI;
 import com.funnyai.tools.M_Output;
 import com.funnyai.tools.M_String;
@@ -71,6 +70,7 @@ public class JavaMain {
             {"open_url","s"},
             {"init_session",""},
             {"Path_Segmentation",""},
+            {"Path_Struct",""},
             {"path",""},
             {"path_jar",""},
             {"js","s"},

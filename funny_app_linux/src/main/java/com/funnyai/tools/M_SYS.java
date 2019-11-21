@@ -12,7 +12,6 @@ import com.funnyai.fs.AI_Var3;
 import com.funnyai.fs.C_Run_Session;
 import com.funnyai.io.Old.S_File;
 import funnyai.JavaMain;
-import static funnyai.JavaMain.pSYS;
 import static funnyai.JavaMain.strPath;
 import java.io.BufferedReader;
 import java.io.File;

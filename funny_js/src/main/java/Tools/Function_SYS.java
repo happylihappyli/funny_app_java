@@ -1,9 +1,8 @@
 package Tools;
 
 import antlr_js.ECMAScriptParser;
+import antlr_js.ECMAScriptParser.SingleExpressionContext;
 import com.funnyai.common.S_Command;
-import com.funnyai.io.S_file;
-import com.funnyai.net.Old.S_Net;
 import com.funnyai.string.Old.S_Strings;
 import funnyai.JavaMain;
 import static java.lang.System.out;
@@ -62,7 +61,9 @@ public class Function_SYS {
         //Object pParam;
         switch(function){
             case "println":
-                
+                if (value==null){
+                    out.println("break");
+                }
                 switch(value.getClass().getName()){
                     case "java.lang.String":
                         value=pParent.string_process((String)value);
@@ -94,6 +95,12 @@ public class Function_SYS {
             ECMAScriptParser.ArgumentListContext pList){
         Object pObj;
         switch(function){
+           case "isnumeric":
+                pObj=pParent.get_var(value);
+                if (pObj!=null){
+                    value=(String) pObj;
+                }
+                return S_Strings.isNumeric((String)value);
            case "urlencode":
                 pObj=pParent.get_var(value);
                 if (pObj!=null){
@@ -310,6 +317,17 @@ public class Function_SYS {
                     return Array_call(pParent,function,value,pObj2,pList);
                 case "java.lang.String":
                     switch(function){
+                        case "substr":
+                        {
+                            String strLine=(String)pObj2;
+                            SingleExpressionContext p1=pList.singleExpression(0);
+                            SingleExpressionContext p2=pList.singleExpression(1);
+                            Object pR1=pParent.parse_single_expression_name(p1);
+                            Object pR2=pParent.parse_single_expression_name(p2);
+                            int i1=((Double)pR1).intValue();
+                            int i2=i1+((Double)pR2).intValue();
+                            return strLine.substring(i1,i2);
+                        }
                         case "startsWith":
                         {
                             String strLine=(String)pObj2;
@@ -469,9 +487,9 @@ public class Function_SYS {
                 case "s_out":
                     return out_call(function,pParam,pParent,pList);
                 case "s_file":
-                    return M_File.file_call(JavaMain.pFile,function,pParam,pParent,pList);
+                    return M_File.call(JavaMain.pFile,function,pParam,pParent,pList);
                 case "s_net":
-                    return M_Net.net_call(function,pParam,pParent,pList);
+                    return M_Net.call(function,pParam,pParent,pList);
                 case "s_string":
                     return string_call(function,pParam,pParent,pList);
                 case "s_sys":
@@ -482,6 +500,8 @@ public class Function_SYS {
                 case "math":
                 case "s_math":
                     return math_call(function,pParam,pParent,pList);
+                case "s_ml":
+                    return M_ML.call(function,pParam,pParent,pList);
                 default:
                     //String name=(String) pParent.parse_single_expression_name(pObj);
                     return default_call(pObj,function,pParam,pParent,pList);

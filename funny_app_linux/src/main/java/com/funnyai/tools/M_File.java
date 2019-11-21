@@ -11,7 +11,6 @@ import com.funnyai.io.Old.S_Dir;
 import com.funnyai.io.Old.S_File_Text;
 import com.funnyai.io.S_file;
 import funnyai.JavaMain;
-import static funnyai.JavaMain.strPath;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.logging.Level;

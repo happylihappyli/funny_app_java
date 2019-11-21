@@ -18,7 +18,7 @@ import static java.lang.System.out;
 public class M_Net {
     public TCP_Client pClient;
     
-    public static Object net_call(
+    public static Object call(
             String function,
             Object value,
             MyVisitor pParent,

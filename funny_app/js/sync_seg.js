@@ -5,7 +5,7 @@ function Init_Seg(){
     var strFile = s_sys.Path_Segmentation()+"/seg.db";
     if (s_file.Exists(strFile)){
         s_file.Copy2File(strFile,strFile+".bak");
-        s_file.Delete(strFile);
+        s_file.delete(strFile);
     }
     
     

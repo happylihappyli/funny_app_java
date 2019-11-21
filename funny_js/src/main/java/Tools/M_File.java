@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class M_File {
     
-    public static Object file_call(
+    public static Object call(
             M_File pM_File,
             String function,
             Object value,

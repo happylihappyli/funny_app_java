@@ -5,12 +5,12 @@ function Init_Struct(){
     var strFile = s_sys.Path_Struct()+"/struct.db";
     if (s_file.Exists(strFile)){
         s_file.Copy2File(strFile,strFile+".bak");
-        s_file.Delete(strFile);
+        s_file.delete(strFile);
     }
     
     
-    var mydb = s_db.DB_File(strFile);
-    var map = s_db.map(mydb,"map");
+    s_db.db_file("db",strFile);
+    s_db.map("db","map");
 
         
     var strURL = "https://www.funnyai.com/funnyai/json_list_ai_struct.php";
@@ -25,14 +25,14 @@ function Init_Struct(){
         var strReturn = s_net.http_post(strURL,strData);
         
         var Count =0;
-        var IndexStr = strReturn.indexOf("{");
+        var IndexStr = strReturn.indexOf("[");
         if (IndexStr>-1){
             strReturn = strReturn.substring(IndexStr);
-            var token = s_json.JSONObject(strReturn);
-            Count = token.getInt("Count");
+            s_json.JSONArray("json_array",strReturn);
+            Count=s_json.JSONArray_length("json_array");
             if (Count>0){
-                map.put("k"+p,strReturn);
-                map.put("size",p);
+                s_db.map_put("map","k"+p,strReturn);
+                s_db.map_put("map","size",p+"");
             }
         }
         
@@ -41,8 +41,8 @@ function Init_Struct(){
             break;
         }
     }
-    s_out.println("size="+map.size());
-    mydb.close();
+    s_out.println("size="+s_db.map_size("map"));
+    s_db.db_close("db");
 }
 
 //*/
@@ -56,6 +56,9 @@ s_sys.init_session();
 
 Init_Struct();
 
+s_sys.sleep(10);
+
+s_sys.exit(0);
 
 
 

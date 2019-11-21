@@ -29,11 +29,15 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         String varName=pNode1.getText();
         pData.pMap.put(varName,"");//定义变量，需要在当前上下文声明一个新的
         
+        if (pInit==null){
+            return null;
+        }
         String Value=pInit.getText();
 
         Object pObj=visitChildren(pInit);
         if (pObj==null){
             out.println("break");
+            pObj=visitChildren(pInit);
         }
 
         switch(pObj.getClass().getName().toLowerCase()){
@@ -248,14 +252,18 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         String Name=p1.getText();
         Object pObj1=this.parse_single_expression_value(p1);
         Object pObj2=this.parse_single_expression_value(p2);
-        
+        if (pObj1==null){
+            out.println("null break;");
+            out.println("************");
+            out.println(ctx.getText());
+            out.println("************");
+        }
         Double value1=0.0;
         Double value2=0.0;
         
         boolean bString=false;
         switch(pObj1.getClass().getName()){
             case "java.lang.String":
-                //value1=(String)pObj1;
                 bString=true;
                 break;
             case "java.lang.Double":
@@ -310,6 +318,12 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         if ("null".equals(value)){
             return null;
         }
+        if ("false".equals(value)){
+            return false;
+        }
+        if ("true".equals(value)){
+            return true;
+        }
         return Double.parseDouble(value);// value;
     }
     @Override
@@ -325,6 +339,7 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
             case  "==":
                 switch(express1.getClass().getName()){
                     case "java.lang.Double":
+                        return Double.compare((Double)express1, (Double)express2) == 0;
                     case "java.lang.Integer":
                     case "java.lang.Long":
                         return (express1 == express2);
@@ -449,7 +464,8 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         }
         if (iResult){
             if (pIf!=null){
-                return visitChildren(pIf);
+                Object pResult=visitChildren(pIf);
+                return pResult;
             }
         }else{
             if (pElse!=null){
@@ -658,12 +674,25 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
 
         
         while((boolean)pObj){
-            visitChildren(p2);
+            Object pObj2=visitChildren(p2);
+            
+            //out.println(pObj2.getClass().getName());
+            if (pObj2!=null){
+                if ("Tools.C_Break".equals(pObj2.getClass().getName())){
+                    break;
+                }
+            }
+                
             pObj=this.visitExpressionSequence(p1);
         }
         return null;
     }
     
+    @Override
+    public Object visitBreakStatement(ECMAScriptParser.BreakStatementContext ctx) {
+        return new C_Break();
+        //return visitChildren(ctx);
+    }
     
     /**
      * new xxx
@@ -792,6 +821,24 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         return visitChildren(ctx);
     }
     
+     
+    @Override
+    public Object visitStatementList(ECMAScriptParser.StatementListContext ctx) {
+        List<StatementContext> pList=ctx.statement();
+        
+        for (int i=0;i<pList.size();i++){
+            StatementContext pState=pList.get(i);
+            Object pObj=this.visitStatement(pState);
+            if (pObj!=null){
+                //out.println(pObj.getClass().getName());
+                switch (pObj.getClass().getName()){
+                    case "Tools.C_Break":
+                        return pObj;
+                }
+            }
+        }
+        return null;//visitChildren(ctx);
+    }
     
     @Override
     public Object visitReturnStatement(ECMAScriptParser.ReturnStatementContext ctx) {
@@ -812,7 +859,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext right = ctx.singleExpression(1);
         TerminalNode p=(TerminalNode) ctx.children.get(1);
         String operate =p.getText();
-        
+//        if ("line.length-1".equals(ctx.getText())){
+//            out.println("break;");
+//        }
         Object express1=parse_single_expression_value(left);
         Object express2=parse_single_expression_value(right);
         
@@ -923,6 +972,9 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
         ECMAScriptParser.SingleExpressionContext p1=ctx.singleExpression();
         ECMAScriptParser.ArgumentsContext p2= ctx.arguments();
         ECMAScriptParser.ArgumentListContext pList=p2.argumentList();
+//        if ("s_out.println(line)".equals(ctx.getText())){
+//            out.println("test");
+//        }
         Object pParam=null;//this.visitArgumentList(pList);
         if (pList!=null){
             pParam=this.visitArgumentList(pList);
@@ -1012,6 +1064,15 @@ public class MyVisitor extends ECMAScriptBaseVisitor{
                                     out.println(pResult.getClass().getName());
                                 }
                         }
+                case "java.lang.String":
+                    switch(strProperty){
+                        case "length":
+                            return ((String)pResult).length();
+                        default:
+                            if (JavaMain.bDebug){
+                                out.println(pResult.getClass().getName());
+                            }  
+                    }
                 case "[Ljava.lang.String;":
                     switch(strProperty){
                         case "length":

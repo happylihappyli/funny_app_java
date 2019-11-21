@@ -89,7 +89,7 @@ public class TCP_Client extends Thread {
         obj.put("return_cmd", return_cmd);
         
         try {
-            out.println(obj.toString());
+            //out.println(obj.toString());
             byte[] b = ("m:<s>:"+obj.toString()+":</s>\r\n").getBytes("UTF-8");
             socket.getOutputStream().write(b);
         } catch (IOException ex) {
